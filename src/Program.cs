@@ -18,13 +18,13 @@ public class Program
     public static int Main(string[] args)
     {
         // build the command line args
-        Obsidian root = new ();
+        Global.RootCommand root = new ();
 
         // an alternate approach to using the ParseResult is to build a
         // middleware handler and inject into the pipeline before the default help handler
 
         // we all need ascii art :)
-        Obsidian.DisplayAsciiArt(root.Parse(args));
+        Global.RootCommand.DisplayAsciiArt(root.Parse(args));
 
         // invoke the correct command handler
         // once you understand what this one line of code does, it's really cool!

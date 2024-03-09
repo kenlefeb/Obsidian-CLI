@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.NamingConventionBinder;
 using System.CommandLine.Parsing;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Obsidian.CLI.model;
 
 namespace Obsidian.CLI.Set
 {
@@ -21,7 +24,7 @@ namespace Obsidian.CLI.Set
         }
 
         // validate arguments
-        private static string ValidateSet(CommandResult result)
+        private static void ValidateSet(CommandResult result)
         {
             // return non-empty string to display an error
             string msg = string.Empty;
@@ -29,37 +32,41 @@ namespace Obsidian.CLI.Set
             try
             {
                 // get the results
-                ArgumentResult keyResult = (ArgumentResult)result.Children.GetByAlias("key");
-                ArgumentResult valueResult = (ArgumentResult)result.Children.GetByAlias("value");
+                var keyResult = result.GetValueForArgument(new KeyArgument());
+                var valueResult = result.GetValueForArgument(new ValueArgument());
 
                 // let System.CommandLine handle this
                 if (keyResult == null || valueResult == null)
                 {
-                    return msg;
+                    result.ErrorMessage = msg;
+                    return;
                 }
 
-                string key = keyResult.GetValueOrDefault<string>();
+                string key = keyResult;
 
                 // validate the key - stop on error
                 if (string.IsNullOrWhiteSpace(key))
                 {
-                    return msg + "key argument cannot be empty\n  valid keys: {string.Join(' ', ValidKeys).Trim()}\n";
+                    result.ErrorMessage = msg + "key argument cannot be empty\n  valid keys: {string.Join(' ', ValidKeys).Trim()}\n";
+                    return;
                 }
                 else
                 {
                     // case sensitive compare against list of valid keys
                     if (!KeyArgument.ValidKeys.Contains(key))
                     {
-                        return msg + $"invalid key\n  valid keys: {string.Join(' ', KeyArgument.ValidKeys).Trim()}\n";
+                        result.ErrorMessage = msg + $"invalid key\n  valid keys: {string.Join(' ', KeyArgument.ValidKeys).Trim()}\n";
+                        return;
                     }
                 }
 
-                List<string> values = valueResult.GetValueOrDefault<List<string>>();
+                List<string> values = valueResult;
 
                 // validate values - stop on error
                 if (values == null || values.Count == 0)
                 {
-                    return msg + "Failed to parse value(s)\n";
+                    result.ErrorMessage = msg + "Failed to parse value(s)\n";
+                    return;
                 }
 
                 // validate the value(s) based on key
@@ -68,7 +75,8 @@ namespace Obsidian.CLI.Set
                     case "Port":
                     case "NodePort":
                         // must be integer within range
-                        return msg + ValidatePort(key, values);
+                        result.ErrorMessage = msg + ValidatePort(key, values);
+                        return;
                     case "Args":
                         // args takes an array of values so skip the default validation
                         break;
@@ -76,7 +84,8 @@ namespace Obsidian.CLI.Set
                         // only one value passed
                         if (values.Count > 1)
                         {
-                            return msg + $"{key} only takes one value\n";
+                            result.ErrorMessage = msg + $"{key} only takes one value\n";
+                            return;
                         }
 
                         break;
@@ -84,10 +93,11 @@ namespace Obsidian.CLI.Set
             }
             catch (Exception ex)
             {
-                return msg + $"Parsing exception: {ex.Message}\n";
+                result.ErrorMessage = msg + $"Parsing exception: {ex.Message}\n";
+                return;
             }
 
-            return msg;
+            result.ErrorMessage = msg;
         }
 
         // validate Port and NodePort

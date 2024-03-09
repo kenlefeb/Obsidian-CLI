@@ -4,6 +4,7 @@ using System.CommandLine;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Obsidian.CLI.model;
 
 namespace Obsidian.CLI.Build
 {

@@ -3,8 +3,9 @@
 
 using System;
 using System.Text.Json;
+using Obsidian.CLI.model;
 
-namespace Obsidian.CLI.CommandLine.Extensions;
+namespace Obsidian.CLI.Extensions;
 
 /// <summary>
 /// Command handlers for each leaf command

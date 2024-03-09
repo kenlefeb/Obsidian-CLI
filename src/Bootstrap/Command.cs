@@ -18,7 +18,7 @@ namespace Obsidian.CLI.Bootstrap
         }
 
         // validate the bootstrap command parameters
-        internal static string ValidateBootstrapCommand(CommandResult result)
+        internal static void ValidateBootstrapCommand(CommandResult result)
         {
             string msg = string.Empty;
 
@@ -51,7 +51,7 @@ namespace Obsidian.CLI.Bootstrap
             }
 
             // return error message(s) or string.empty
-            return msg;
+            result.ErrorMessage = msg;
         }
 
     }

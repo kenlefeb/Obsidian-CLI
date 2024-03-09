@@ -3,13 +3,13 @@ using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Reflection;
-using Obsidian.CLI.CommandLine.Extensions;
+using Obsidian.CLI.extensions;
 
-namespace Obsidian.CLI;
+namespace Obsidian.CLI.Global;
 
-public class Obsidian : RootCommand
+public class RootCommand : System.CommandLine.RootCommand
 {
-    public Obsidian()
+    public RootCommand()
         : base("Obsidian CLI")
     {
         // we use extensions to build each command which makes reuse and reorg really fast and easy
