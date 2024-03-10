@@ -18,22 +18,12 @@ public class Configuration
 
     public static Configuration Load()
     {
-        FileInfo file = FindConfigurationFile("settings.json");
         var builder = new ConfigurationBuilder();
-        if (file?.Exists ?? false)
-            builder.AddJsonFile(file.FullName);
-        else
-            builder.AddJsonFile(file.Name);
+        builder.AddJsonFile("settings.json");
         builder.AddEnvironmentVariables();
         builder.AddUserSecrets<Configuration>(optional: true);
         var configuration = builder.Build();
         return configuration?.Get<Configuration>() ?? new Configuration();
-    }
-
-    private static FileInfo FindConfigurationFile(string name)
-    {
-        var candidate = System.Environment.ExpandEnvironmentVariables($"%USERPROFILE%\\.obsidian-cli\\{name}");
-        return new FileInfo(candidate);
     }
 }
 
