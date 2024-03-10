@@ -46,13 +46,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="settings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Compile Remove="CLI\**" />
+    <EmbeddedResource Remove="CLI\**" />
+    <None Remove="CLI\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CLI\" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="settings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

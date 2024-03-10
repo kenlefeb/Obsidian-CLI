@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Obsidian.Domain;
 
 namespace Obsidian.CLI.Global;
 
@@ -35,38 +36,3 @@ public class Configuration
     }
 }
 
-public class Vault
-{
-    public string Name { get; set; }
-    public string Id { get; set; }
-    public string Path { get; set; }
-    public Templates Templates { get; set; } = new Templates();
-}
-
-public class Templates
-{
-    public string Path { get; set; }
-    public IList<Template> Items { get; set; } = new List<Template>();
-}
-
-public class Template
-{
-    public string Type { get; set; }
-    public string Name { get; set; }
-    public bool IsDefault { get; set; }
-    public string Path { get; set; }
-    public Recurrence Recurrence { get; set; } = new EveryDayRecurrence();
-    public Template? Extends { get; set; } = null;
-}
-
-public class EveryDayRecurrence : Recurrence
-{
-    public override string Pattern { get; set; } = "*";
-}
-
-public class Recurrence
-{
-    public virtual DateOnly? Start { get; set; } = null;
-    public virtual DateOnly? End { get; set; } = null;
-    public virtual string Pattern { get; set; } = "*";
-}

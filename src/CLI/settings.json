@@ -4,33 +4,35 @@
 			"name": "Vault",
 			"id": "vault",
 			"path": "C:\\Users\\kenlefeb\\Documents\\Obsidian\\Vault",
-			"templates": {
-				"path": "library\\templates",
-				"items": [
-					{
-						"type": "Daily Note",
-						"name": "Default",
-						"default": true,
-						"recurrence": {
-							"pattern": "*"
-						},
-						"path": "@\\{date:yyyy}}\\{date:MM MMMM}}\\{date:dd dddd}}\\{date:yyyy-MM-dd}.md"
-					},
-					{
-						"type": "Daily Note",
-						"extends": {
+			"settings": {
+				"templates": {
+					"path": "library\\templates",
+					"items": [
+						{
 							"type": "Daily Note",
-							"name": "Default"
+							"name": "Default",
+							"default": true,
+							"recurrence": {
+								"pattern": "*"
+							},
+							"path": "@\\{date:yyyy}}\\{date:MM MMMM}}\\{date:dd dddd}}\\{date:yyyy-MM-dd}.md"
 						},
-						"name": "Monday",
-						"recurrence": {
-							"start": "2024-01-01",
-							"end": "2024-12-31",
-							"pattern": "weekly"
-						},
-						"path": "@\\{date:yyyy}}\\{date:MM MMMM}}\\{date:dd dddd}}\\{date:yyyy-MM-dd}.md"
-					}
-				]
+						{
+							"type": "Daily Note",
+							"extends": {
+								"type": "Daily Note",
+								"name": "Default"
+							},
+							"name": "Monday",
+							"recurrence": {
+								"start": "2024-01-01",
+								"end": "2024-12-31",
+								"pattern": "weekly"
+							},
+							"path": "@\\{date:yyyy}}\\{date:MM MMMM}}\\{date:dd dddd}}\\{date:yyyy-MM-dd}.md"
+						}
+					]
+				}
 			}
 		}
 	]

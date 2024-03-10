@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Obsidian", "src\CLI\Obsidian.csproj", "{DFE2E90D-EA48-42A4-919F-DA5621059A16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{CB862D9F-DF89-4B5F-9CB1-A516D0FED013}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{DFE2E90D-EA48-42A4-919F-DA5621059A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFE2E90D-EA48-42A4-919F-DA5621059A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DFE2E90D-EA48-42A4-919F-DA5621059A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB862D9F-DF89-4B5F-9CB1-A516D0FED013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB862D9F-DF89-4B5F-9CB1-A516D0FED013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB862D9F-DF89-4B5F-9CB1-A516D0FED013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB862D9F-DF89-4B5F-9CB1-A516D0FED013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
