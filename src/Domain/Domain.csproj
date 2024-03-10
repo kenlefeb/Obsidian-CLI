@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>Obsidian.Domain</RootNamespace>
+		<VersionPrefix>0.0.1</VersionPrefix>
+		<VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
+		<Company>Blacksmith Press</Company>
+		<Copyright>Copyright (c) Kenneth LeFebvre. All rights reserved.</Copyright>
+		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+		<LangVersion>Latest</LangVersion>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<RepositoryUrl>https://github.com/kenlefeb/obsidian-cli/</RepositoryUrl>
+		<Description>Domain library for working with an Obsidian vault.</Description>
+		<Title>Obsidian Domain</Title>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Handlebars.Net" Version="2.1.4" />
+	  <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.4.1.4" />
+	</ItemGroup>
+
+</Project>
