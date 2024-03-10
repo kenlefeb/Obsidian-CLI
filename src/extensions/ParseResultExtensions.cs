@@ -4,7 +4,7 @@
 using System.CommandLine.Parsing;
 using System.Linq;
 
-namespace Obsidian.CLI.CommandLine.Extensions;
+namespace Obsidian.CLI.extensions;
 
 /// <summary>
 /// Extension methods to check ParseResult for specific unmatched tokens

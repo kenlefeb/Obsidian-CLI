@@ -3,7 +3,7 @@
 
 using System.Text.Json;
 
-namespace Obsidian.CLI;
+namespace Obsidian.CLI.model;
 
 /// <summary>
 /// BuildType enum used in build command

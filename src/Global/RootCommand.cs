@@ -3,15 +3,17 @@ using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Reflection;
-using Obsidian.CLI.CommandLine.Extensions;
+using Obsidian.CLI.extensions;
 
-namespace Obsidian.CLI;
+namespace Obsidian.CLI.Global;
 
-public class Obsidian : RootCommand
+public class RootCommand : System.CommandLine.RootCommand
 {
-    public Obsidian()
+    public RootCommand()
         : base("Obsidian CLI")
     {
+        var configuration = Configuration.Load();
+
         // we use extensions to build each command which makes reuse and reorg really fast and easy
         // notice there is no help or version command added
         // --help -h -? and --version are "automatic"
@@ -19,18 +21,8 @@ public class Obsidian : RootCommand
         //   versionprefix and versionsuffix
 
         // add the command handlers
-
-        // example of using environment variables as default values
-        AddCommand(new Add.Command());
-
-        // example of using sub-command specific options and validation
-        AddCommand(new Bootstrap.Command());
-
-        // example using an enum option with defaults
-        AddCommand(new Build.Command());
-
-        // example using positional Arguments with validation
-        AddCommand(new Set.Command());
+        AddCommand(new Obsidian.CLI.Configuration.Command(configuration));
+        AddCommand(new Obsidian.CLI.DailyNotes.Command(configuration));
 
         // add the global options
         // these options are available to all commands and sub commands

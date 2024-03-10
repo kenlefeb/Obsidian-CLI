@@ -1,6 +1,9 @@
-﻿using Obsidian.CLI.CommandLine.Extensions;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.NamingConventionBinder;
+using Obsidian.CLI.extensions;
+using Obsidian.CLI.Extensions;
+using Obsidian.CLI.model;
 
 namespace Obsidian.CLI.Build
 {

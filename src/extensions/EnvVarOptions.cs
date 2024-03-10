@@ -4,9 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
-using System.CommandLine.Parsing;
 
-namespace Obsidian.CLI.CommandLine.Extensions;
+namespace Obsidian.CLI.extensions;
 
 /// <summary>
 /// Add environment variable values to System.CommandLine Options
@@ -119,7 +118,7 @@ public static class EnvVarOptions
             {
             }
 
-            return s;
+            res.ErrorMessage = s;
         });
 
         if (maxValue != null)
@@ -142,7 +141,7 @@ public static class EnvVarOptions
                 {
                 }
 
-                return s;
+                res.ErrorMessage = s;
             });
         }
 

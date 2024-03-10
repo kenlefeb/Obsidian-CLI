@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Obsidian.CLI;
+namespace Obsidian.CLI.model;
 
 /// <summary>
 /// Model for bootstrap commands
