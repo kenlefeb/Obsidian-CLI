@@ -1,0 +1,44 @@
+{
+	"vaults": [
+		{
+			"name": "Vault",
+			"id": "vault",
+			"path": "C:\\Users\\kenlefeb\\Documents\\Obsidian\\Vault",
+			"settings": {
+				"dailyNotes": {
+					"root": "@",
+					"folder": "{{date \"yyyy\\\\MM MMMM\\\\dd dddd\"}}",
+					"name": "{{date \"yyyy-MM-dd\"}}.md",
+					"searchPattern": "\\d{4}-\\d{2}-\\d{2}\\.md",
+					"templateType": "Daily Note"
+				},
+				"templates": {
+					"path": "library\\templates",
+					"items": [
+						{
+							"type": "Daily Note",
+							"name": "daily\\default",
+							"default": true,
+							"recurrence": {
+								"pattern": "*"
+							}
+						},
+						{
+							"type": "Daily Note",
+							"extends": {
+								"type": "Daily Note",
+								"name": "daily\\default"
+							},
+							"name": "daily\\Monday",
+							"recurrence": {
+								"start": "2024-01-01",
+								"end": "2024-12-31",
+								"pattern": "weekly"
+							}
+						}
+					]
+				}
+			}
+		}
+	]
+}
