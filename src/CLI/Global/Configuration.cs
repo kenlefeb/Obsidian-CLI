@@ -26,7 +26,8 @@ public class Configuration
             builder.AddJsonFile(file.Name);
         builder.AddEnvironmentVariables();
         builder.AddUserSecrets<Configuration>(optional: true);
-        return builder.Build().Get<Configuration>();
+        var configuration = builder.Build();
+        return configuration?.Get<Configuration>() ?? new Configuration();
     }
 
     private static FileInfo FindConfigurationFile(string name)

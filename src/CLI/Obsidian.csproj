@@ -12,6 +12,7 @@
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <LangVersion>Latest</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	<Nullable>Enable</Nullable>
     <RepositoryUrl>https://github.com/kenlefeb/obsidian-cli/</RepositoryUrl> 
     <Description>Command Line Interface for working with an Obsidian vault.</Description>
     <Title>Obsidian CLI</Title>

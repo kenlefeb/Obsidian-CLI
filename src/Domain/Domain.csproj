@@ -16,4 +16,9 @@
 		<Title>Obsidian Domain</Title>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Handlebars.Net" Version="2.1.4" />
+	  <PackageReference Include="Handlebars.Net.Helpers.Humanizer" Version="2.4.1.4" />
+	</ItemGroup>
+
 </Project>

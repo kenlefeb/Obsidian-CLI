@@ -5,6 +5,13 @@
 			"id": "vault",
 			"path": "C:\\Users\\kenlefeb\\Documents\\Obsidian\\Vault",
 			"settings": {
+				"dailyNotes": {
+					"root": "@",
+					"folder": "{{date \"yyyy\\\\MM MMMM\\\\dd dddd\"}}",
+					"name": "{{date \"yyyy-MM-dd\"}}.md",
+					"searchPattern": "\\d{4}-\\d{2}-\\d{2}\\.md",
+					"templateType": "Daily Note"
+				},
 				"templates": {
 					"path": "library\\templates",
 					"items": [
@@ -14,8 +21,7 @@
 							"default": true,
 							"recurrence": {
 								"pattern": "*"
-							},
-							"path": "@\\{date:yyyy}}\\{date:MM MMMM}}\\{date:dd dddd}}\\{date:yyyy-MM-dd}.md"
+							}
 						},
 						{
 							"type": "Daily Note",
@@ -28,8 +34,7 @@
 								"start": "2024-01-01",
 								"end": "2024-12-31",
 								"pattern": "weekly"
-							},
-							"path": "@\\{date:yyyy}}\\{date:MM MMMM}}\\{date:dd dddd}}\\{date:yyyy-MM-dd}.md"
+							}
 						}
 					]
 				}
