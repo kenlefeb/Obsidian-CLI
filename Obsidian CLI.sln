@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Obsidian", "src\Obsidian.csproj", "{E66D4B17-CB20-4BD9-AF67-3624AE824103}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Obsidian", "src\CLI\Obsidian.csproj", "{DFE2E90D-EA48-42A4-919F-DA5621059A16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E66D4B17-CB20-4BD9-AF67-3624AE824103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E66D4B17-CB20-4BD9-AF67-3624AE824103}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E66D4B17-CB20-4BD9-AF67-3624AE824103}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E66D4B17-CB20-4BD9-AF67-3624AE824103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFE2E90D-EA48-42A4-919F-DA5621059A16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFE2E90D-EA48-42A4-919F-DA5621059A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFE2E90D-EA48-42A4-919F-DA5621059A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFE2E90D-EA48-42A4-919F-DA5621059A16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
