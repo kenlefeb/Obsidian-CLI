@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Obsidian": {
+      "commandName": "Project",
+      "commandLineArgs": "config list --all"
+    }
+  }
+}

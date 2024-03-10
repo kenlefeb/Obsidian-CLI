@@ -21,6 +21,7 @@ public class RootCommand : System.CommandLine.RootCommand
         //   versionprefix and versionsuffix
 
         // add the command handlers
+        AddCommand(new Obsidian.CLI.Configuration.Command(configuration));
 
         // example of using environment variables as default values
         AddCommand(new Add.Command());
