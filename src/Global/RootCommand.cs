@@ -12,6 +12,8 @@ public class RootCommand : System.CommandLine.RootCommand
     public RootCommand()
         : base("Obsidian CLI")
     {
+        var configuration = Configuration.Load();
+
         // we use extensions to build each command which makes reuse and reorg really fast and easy
         // notice there is no help or version command added
         // --help -h -? and --version are "automatic"
