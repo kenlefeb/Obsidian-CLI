@@ -47,6 +47,10 @@ namespace Obsidian.CLI.DailyNotes.Add
 
         private Vault GetVault(Global.Configuration configuration, Options options)
         {
+            if (configuration.Vaults.Count == 0)
+            {
+                throw new InvalidOperationException("No vaults found in configuration.");
+            }
             string id = options.Vault ?? configuration.Vaults[0].Id;
             return configuration.Vaults.First(v => v.Id == id);
         }

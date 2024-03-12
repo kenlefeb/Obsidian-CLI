@@ -34,8 +34,8 @@ namespace Obsidian.Domain
             _vault = vault;
             _notes = new Lazy<IQueryable<DailyNote>>(() =>
             {
-                string pattern = ComposeSearchPattern(vault);
-                DirectoryInfo folder = FindRootFolderForDailyNotes(vault);
+                var pattern = ComposeSearchPattern(vault);
+                var folder = FindRootFolderForDailyNotes(vault);
                 return FindDailyNotes(folder, pattern);
             });
         }
@@ -57,7 +57,7 @@ namespace Obsidian.Domain
 
         private DirectoryInfo FindRootFolderForDailyNotes(Vault vault)
         {
-            string path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Root);
+            var path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Root);
             if (!Directory.Exists(path))
                 _ = Directory.CreateDirectory(path);
 
@@ -82,7 +82,7 @@ namespace Obsidian.Domain
 
         public DailyNote Create(DateOnly? date = null)
         {
-            DateOnly theDate = DetermineDate(date);
+            var theDate = DetermineDate(date);
             return new DailyNote(_vault, theDate);
         }
 
