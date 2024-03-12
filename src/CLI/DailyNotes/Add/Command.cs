@@ -28,8 +28,8 @@ namespace Obsidian.CLI.DailyNotes.Add
             }
             else
             {
-                var vault = GetVault(_configuration, options);
-                var note = CreateNote(vault, options);
+                Vault vault = GetVault(_configuration, options);
+                DailyNote note = CreateNote(vault, options);
                 Console.WriteLine($"Daily Note Created: {note.File.FullName}");
                 if (options.Verbose)
                 {
@@ -47,7 +47,7 @@ namespace Obsidian.CLI.DailyNotes.Add
 
         private Vault GetVault(Global.Configuration configuration, Options options)
         {
-            var id = options.Vault ?? configuration.Vaults[0].Id;
+            string id = options.Vault ?? configuration.Vaults[0].Id;
             return configuration.Vaults.First(v => v.Id == id);
         }
     }

@@ -1,7 +1,4 @@
-﻿using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.NamingConventionBinder;
-using Obsidian.CLI.extensions;
+﻿using System.CommandLine.NamingConventionBinder;
 using Obsidian.CLI.Extensions;
 using Obsidian.CLI.model;
 

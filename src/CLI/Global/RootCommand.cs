@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.IO;
 using System.Reflection;
@@ -12,7 +11,7 @@ public class RootCommand : System.CommandLine.RootCommand
     public RootCommand()
         : base("Obsidian CLI")
     {
-        var configuration = Configuration.Load();
+        Configuration configuration = Configuration.Load();
 
         // we use extensions to build each command which makes reuse and reorg really fast and easy
         // notice there is no help or version command added

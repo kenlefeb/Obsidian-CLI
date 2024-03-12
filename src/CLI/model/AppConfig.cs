@@ -23,7 +23,7 @@ public class AppConfig
     /// <summary>
     /// Gets or sets the JSON serialization options
     /// </summary>
-    public static JsonSerializerOptions JsonOptions { get; set; } = new () { WriteIndented = true };
+    public static JsonSerializerOptions JsonOptions { get; set; } = new() { WriteIndented = true };
 
     /// <summary>
     /// Gets or sets a value indicating whether this is a dry run

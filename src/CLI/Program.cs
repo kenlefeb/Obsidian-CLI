@@ -18,7 +18,7 @@ public class Program
     public static int Main(string[] args)
     {
         // build the command line args
-        Global.RootCommand root = new ();
+        Global.RootCommand root = [];
 
         // an alternate approach to using the ParseResult is to build a
         // middleware handler and inject into the pipeline before the default help handler

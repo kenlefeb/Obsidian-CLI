@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.CommandLine.Parsing;
-using System.Linq;
-
-namespace Obsidian.CLI.Configuration
+﻿namespace Obsidian.CLI.Configuration
 {
     public class Command : System.CommandLine.Command
     {

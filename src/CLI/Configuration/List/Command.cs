@@ -1,8 +1,6 @@
 ﻿using System;
 using System.CommandLine.NamingConventionBinder;
 using System.Text.Json;
-using Obsidian.CLI.Extensions;
-using Obsidian.CLI.model;
 
 namespace Obsidian.CLI.Configuration.List
 {

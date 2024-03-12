@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.CommandLine.NamingConventionBinder;
 using System.CommandLine.Parsing;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Obsidian.CLI.model;
 
 namespace Obsidian.CLI.Set
@@ -32,8 +28,8 @@ namespace Obsidian.CLI.Set
             try
             {
                 // get the results
-                var keyResult = result.GetValueForArgument(new KeyArgument());
-                var valueResult = result.GetValueForArgument(new ValueArgument());
+                string keyResult = result.GetValueForArgument(new KeyArgument());
+                List<string> valueResult = result.GetValueForArgument(new ValueArgument());
 
                 // let System.CommandLine handle this
                 if (keyResult == null || valueResult == null)

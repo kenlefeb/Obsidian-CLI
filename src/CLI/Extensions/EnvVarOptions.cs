@@ -13,7 +13,7 @@ namespace Obsidian.CLI.extensions;
 public static class EnvVarOptions
 {
     // capture parse errors from env vars
-    private static readonly List<string> EnvVarErrors = new ();
+    private static readonly List<string> EnvVarErrors = [];
 
     /// <summary>
     /// Add an option that uses env var for default value
