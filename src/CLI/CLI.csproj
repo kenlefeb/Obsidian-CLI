@@ -16,6 +16,7 @@
     <RepositoryUrl>https://github.com/kenlefeb/obsidian-cli/</RepositoryUrl> 
     <Description>Command Line Interface for working with an Obsidian vault.</Description>
     <Title>Obsidian CLI</Title>
+    <AssemblyName>obsidian</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
