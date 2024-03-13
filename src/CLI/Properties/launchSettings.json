@@ -2,7 +2,7 @@
   "profiles": {
     "Obsidian": {
       "commandName": "Project",
-      "commandLineArgs": "daily-note add --date 2025-01-02 --vault vault"
+      "commandLineArgs": "daily-note add --date 2025-01-03 --vault vault"
     }
   }
 }

@@ -50,12 +50,12 @@ namespace Obsidian.Domain
                 .AsQueryable();
         }
 
-        private string ComposeSearchPattern(Vault vault)
+        private static string ComposeSearchPattern(Vault vault)
         {
             return vault.Settings.DailyNotes.SearchPattern;
         }
 
-        private DirectoryInfo FindRootFolderForDailyNotes(Vault vault)
+        private static DirectoryInfo FindRootFolderForDailyNotes(Vault vault)
         {
             var path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Root);
             if (!Directory.Exists(path))
@@ -86,7 +86,7 @@ namespace Obsidian.Domain
             return new DailyNote(_vault, theDate);
         }
 
-        private DateOnly DetermineDate(DateOnly? date)
+        private static DateOnly DetermineDate(DateOnly? date)
         {
             return date ?? DateOnly.FromDateTime(DateTime.Now);
         }

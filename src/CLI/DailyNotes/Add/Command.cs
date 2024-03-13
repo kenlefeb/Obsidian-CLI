@@ -1,7 +1,9 @@
 ﻿using System;
 using System.CommandLine.NamingConventionBinder;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
+using Obsidian.CLI.Exceptions;
 using Obsidian.Domain;
 
 namespace Obsidian.CLI.DailyNotes.Add
@@ -40,19 +42,20 @@ namespace Obsidian.CLI.DailyNotes.Add
             return 0;
         }
 
-        private DailyNote CreateNote(Vault vault, Options options)
+        private static DailyNote CreateNote(Vault vault, Options options)
         {
             return vault.DailyNotes.Create(options.Date);
         }
 
-        private Vault GetVault(Global.Configuration configuration, Options options)
+        private static Vault GetVault(Global.Configuration configuration, Options options)
         {
             if (configuration.Vaults.Count == 0)
             {
-                throw new InvalidOperationException("No vaults found in configuration.");
+                throw new InvalidConfigurationException("No vaults found in configuration.");
             }
             string id = options.Vault ?? configuration.Vaults[0].Id;
-            return configuration.Vaults.First(v => v.Id == id);
+            var vault = configuration.Vaults.FirstOrDefault(v => v.Id == id);
+            return vault ?? throw new InvalidConfigurationException($"Vault with id '{id}' not found in configuration.");
         }
     }
 }

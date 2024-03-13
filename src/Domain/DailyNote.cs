@@ -24,7 +24,7 @@ public class DailyNote : Note
         (Content, File) = GetContentAndFile(Vault, date, path);
     }
 
-    private (string, FileInfo) GetContentAndFile(Vault vault, DateOnly date, string path)
+    private static (string, FileInfo) GetContentAndFile(Vault vault, DateOnly date, string path)
     {
         var folder = GetFolder(path);
         var template = DetermineTemplate(vault, date);
@@ -34,7 +34,7 @@ public class DailyNote : Note
         return (content, file);
     }
 
-    private string ComposeFileName(Vault vault, DateOnly date)
+    private static string ComposeFileName(Vault vault, DateOnly date)
     {
         var template = vault.Settings.DailyNotes.Name;
         Handlebars.RegisterHelper("date", DateHelper);
@@ -43,23 +43,25 @@ public class DailyNote : Note
         return compiled(data);
     }
 
-    private DateOnly DetermineDate(FileInfo file)
+    private static DateOnly DetermineDate(FileInfo file)
     {
         var name = file.Name;
         var date = DateOnly.Parse(name);
         return date;
     }
 
-    private FileInfo CreateFile(DirectoryInfo folder, string name, string note)
+    private static FileInfo CreateFile(DirectoryInfo folder, string name, string note)
     {
         var path = Path.Combine(folder.FullName, name);
         System.IO.File.WriteAllText(path, note);
         return new FileInfo(path);
     }
 
-    private string CreateNoteContent(Template template, Vault vault, DateOnly date)
+    private static string CreateNoteContent(Template template, Vault vault, DateOnly date)
     {
         var file = GetTemplateFile(template, vault);
+        if (!file.Exists)
+            throw new FileNotFoundException($"Template file not found: {file.FullName}");
         var contents = System.IO.File.ReadAllText(file.FullName);
         Handlebars.RegisterHelper("date", DateHelper);
         var compiled = Handlebars.Compile(contents);
@@ -67,27 +69,28 @@ public class DailyNote : Note
         return compiled(data);
     }
 
-    private FileInfo GetTemplateFile(Template template, Vault vault)
+    private static FileInfo GetTemplateFile(Template template, Vault vault)
     {
         var path = Path.Combine(vault.Path, vault.Settings.Templates.Path, $"{template.Name}.md");
         return new FileInfo(path);
     }
 
-    private Template DetermineTemplate(Vault vault, DateOnly date)
+    private static Template DetermineTemplate(Vault vault, DateOnly date)
     {
         var type = vault.Settings.DailyNotes.TemplateType;
         var candidates = vault.Settings.Templates.Items.Where(t => t.Type == type);
-        return candidates.FirstOrDefault(t => t.AppliesTo(date));
+        var template = candidates.FirstOrDefault(t => t.AppliesTo(date));
+        return template ?? throw new FileNotFoundException($"No template found for {type} on {date}");
     }
 
-    private DirectoryInfo GetFolder(string path)
+    private static DirectoryInfo GetFolder(string path)
     {
         if (!Directory.Exists(path))
-            _ = Directory.CreateDirectory(path);
+            _ = Directory.CreateDirectory(path!);
         return new DirectoryInfo(path);
     }
 
-    private string DeterminePath(Vault vault, DateOnly date)
+    private static string DeterminePath(Vault vault, DateOnly date)
     {
         var template = vault.Settings.DailyNotes.Folder;
         Handlebars.RegisterHelper("date", DateHelper);
