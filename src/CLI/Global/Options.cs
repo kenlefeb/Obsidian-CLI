@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Obsidian.CLI.Global
+﻿namespace Obsidian.CLI.Global
 {
-    public class Options
+    internal class Options
     {
         /// <summary>
         /// Gets or sets a value indicating whether this is a dry run

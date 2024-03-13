@@ -12,6 +12,6 @@ public class Template
 
     public bool AppliesTo(DateOnly date)
     {
-        return true;
+        return Recurrence?.Includes(date) ?? true;
     }
 }

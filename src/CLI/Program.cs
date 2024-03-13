@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.CommandLine;
 
 namespace Obsidian.CLI;
@@ -8,7 +9,7 @@ namespace Obsidian.CLI;
 /// <summary>
 /// Main application class
 /// </summary>
-public class Program
+internal class Program
 {
     /// <summary>
     /// Main entry point
@@ -18,7 +19,7 @@ public class Program
     public static int Main(string[] args)
     {
         // build the command line args
-        Global.RootCommand root = new ();
+        Global.RootCommand root = [];
 
         // an alternate approach to using the ParseResult is to build a
         // middleware handler and inject into the pipeline before the default help handler
@@ -31,6 +32,14 @@ public class Program
         // we add a command handler for each of the leaf commands and this automatically calls that handler
         // no switch or if statements!
         // allows for super clean code with no parsing!
-        return root.Invoke(args);
+        try
+        {
+            return root.Invoke(args);
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine(exception.Message);
+            return 1;
+        }
     }
 }

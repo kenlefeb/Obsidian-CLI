@@ -1,6 +1,6 @@
 ﻿namespace Obsidian.Domain;
 
-public class EveryDayRecurrence : Recurrence
+internal class EveryDayRecurrence : Recurrence
 {
     public override string Pattern { get; set; } = "*";
 }

@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Obsidian.Domain.Settings;
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-
-using Obsidian.Domain.Settings;
 
 namespace Obsidian.Domain
 {
@@ -28,7 +27,7 @@ namespace Obsidian.Domain
     public class DailyNotes : IQueryable<DailyNote>
     {
         private readonly Vault _vault;
-        private Lazy<IQueryable<DailyNote>> _notes;
+        private readonly Lazy<IQueryable<DailyNote>> _notes;
 
         public DailyNotes(Vault vault)
         {
@@ -43,24 +42,24 @@ namespace Obsidian.Domain
 
         private IQueryable<DailyNote> FindDailyNotes(DirectoryInfo folder, string pattern)
         {
-            var regex = new Regex(pattern);
+            Regex regex = new(pattern);
 
-            return Directory.GetFiles(folder.FullName,pattern)
+            return Directory.GetFiles(folder.FullName, pattern)
                 .Where(path => regex.IsMatch(path))
                 .Select(path => new DailyNote(_vault, path))
                 .AsQueryable();
         }
 
-        private string ComposeSearchPattern(Vault vault)
+        private static string ComposeSearchPattern(Vault vault)
         {
             return vault.Settings.DailyNotes.SearchPattern;
         }
 
-        private DirectoryInfo FindRootFolderForDailyNotes(Vault vault)
+        private static DirectoryInfo FindRootFolderForDailyNotes(Vault vault)
         {
             var path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Root);
             if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+                _ = Directory.CreateDirectory(path);
 
             return new DirectoryInfo(path);
         }
@@ -87,7 +86,7 @@ namespace Obsidian.Domain
             return new DailyNote(_vault, theDate);
         }
 
-        private DateOnly DetermineDate(DateOnly? date)
+        private static DateOnly DetermineDate(DateOnly? date)
         {
             return date ?? DateOnly.FromDateTime(DateTime.Now);
         }
