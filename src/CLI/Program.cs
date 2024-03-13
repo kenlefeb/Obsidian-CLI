@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.CommandLine;
 
 namespace Obsidian.CLI;
@@ -31,6 +32,14 @@ internal class Program
         // we add a command handler for each of the leaf commands and this automatically calls that handler
         // no switch or if statements!
         // allows for super clean code with no parsing!
-        return root.Invoke(args);
+        try
+        {
+            return root.Invoke(args);
+        }
+        catch (Exception exception)
+        {
+            Console.Error.WriteLine(exception.Message);
+            return 1;
+        }
     }
 }

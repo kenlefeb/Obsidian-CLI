@@ -23,23 +23,31 @@ namespace Obsidian.CLI.DailyNotes.Add
 
         public int DoCommand(Options options)
         {
-            if (options.DryRun)
+            try
             {
-                Console.WriteLine("Daily Note Add Command");
-                Console.WriteLine(JsonSerializer.Serialize<Options>(options, _configuration.JsonOptions));
-            }
-            else
-            {
-                Vault vault = GetVault(_configuration, options);
-                DailyNote note = CreateNote(vault, options);
-                Console.WriteLine($"Daily Note Created: {note.File.FullName}");
-                if (options.Verbose)
+                if (options.DryRun)
                 {
+                    Console.WriteLine("Daily Note Add Command");
                     Console.WriteLine(JsonSerializer.Serialize<Options>(options, _configuration.JsonOptions));
                 }
-            }
+                else
+                {
+                    Vault vault = GetVault(_configuration, options);
+                    DailyNote note = CreateNote(vault, options);
+                    Console.WriteLine($"Daily Note Created: {note.File.FullName}");
+                    if (options.Verbose)
+                    {
+                        Console.WriteLine(JsonSerializer.Serialize<Options>(options, _configuration.JsonOptions));
+                    }
+                }
 
-            return 0;
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message);
+                return 1;
+            }
         }
 
         private static DailyNote CreateNote(Vault vault, Options options)

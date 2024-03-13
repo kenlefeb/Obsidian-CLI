@@ -18,18 +18,27 @@ namespace Obsidian.CLI.Configuration.List
 
         public int DoCommand(Options options)
         {
-            if (options.DryRun)
+            try
             {
-                Console.WriteLine("Configuration List Command");
-                Console.WriteLine(JsonSerializer.Serialize<Options>(options, _configuration.JsonOptions));
-            }
-            else
-            {
-                Console.WriteLine("Configuration:");
-                Console.WriteLine(JsonSerializer.Serialize<Global.Configuration>(_configuration, _configuration.JsonOptions));
-            }
+                if (options.DryRun)
+                {
+                    Console.WriteLine("Configuration List Command");
+                    Console.WriteLine(JsonSerializer.Serialize<Options>(options, _configuration.JsonOptions));
+                }
+                else
+                {
+                    Console.WriteLine("Configuration:");
+                    Console.WriteLine(
+                        JsonSerializer.Serialize<Global.Configuration>(_configuration, _configuration.JsonOptions));
+                }
 
-            return 0;
+                return 0;
+            }
+            catch (Exception exception)
+            {
+                Console.Error.WriteLine(exception.Message);
+                return 1;
+            }
         }
     }
 }
