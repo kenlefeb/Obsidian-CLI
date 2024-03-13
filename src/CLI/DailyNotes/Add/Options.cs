@@ -2,7 +2,7 @@
 
 namespace Obsidian.CLI.DailyNotes.Add
 {
-    public class Options : Configuration.Options
+    internal class Options : Configuration.Options
     {
         public bool All { get; set; }
         public string? Vault { get; set; } = null;

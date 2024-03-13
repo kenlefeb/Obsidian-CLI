@@ -8,7 +8,7 @@ using Obsidian.Domain;
 
 namespace Obsidian.CLI.DailyNotes.Add
 {
-    public class Command : System.CommandLine.Command
+    internal class Command : System.CommandLine.Command
     {
         private readonly Global.Configuration _configuration;
 

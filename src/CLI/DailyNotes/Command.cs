@@ -1,6 +1,6 @@
 ﻿namespace Obsidian.CLI.DailyNotes
 {
-    public class Command : System.CommandLine.Command
+    internal class Command : System.CommandLine.Command
     {
         private readonly Global.Configuration _configuration;
 

@@ -6,7 +6,7 @@ using Obsidian.CLI.extensions;
 
 namespace Obsidian.CLI.Global;
 
-public class RootCommand : System.CommandLine.RootCommand
+internal class RootCommand : System.CommandLine.RootCommand
 {
     public RootCommand()
         : base("Obsidian CLI")

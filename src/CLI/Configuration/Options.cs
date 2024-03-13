@@ -1,6 +1,6 @@
 ﻿namespace Obsidian.CLI.Configuration
 {
-    public class Options : Global.Options
+    internal class Options : Global.Options
     {
     }
 }

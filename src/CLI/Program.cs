@@ -8,7 +8,7 @@ namespace Obsidian.CLI;
 /// <summary>
 /// Main application class
 /// </summary>
-public class Program
+internal class Program
 {
     /// <summary>
     /// Main entry point

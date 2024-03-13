@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace Obsidian.CLI.Configuration.List
 {
-    public class Command : System.CommandLine.Command
+    internal class Command : System.CommandLine.Command
     {
         private readonly Global.Configuration _configuration;
 
