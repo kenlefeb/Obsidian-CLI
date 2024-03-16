@@ -16,7 +16,8 @@ namespace Domain.Tests
 
         public GivenTemplater()
         {
-            _subject = new Templater();
+            _subject = new Templater(new TemplateData
+                { Environment = new EnvironmentVariables(), NoteDate = new DateOnly(2025, 01, 01) });
         }
 
         [Fact]
@@ -38,10 +39,10 @@ namespace Domain.Tests
         {
             // arrange
             var template = "Today is {{ NoteDate | format_date: \"dddd MMMM yyyy\" }}";
-            var expected = "Today is Friday January 2021";
+            var expected = "Today is Wednesday January 2025";
             
             // act
-            var actual = _subject.Render(template, new { NoteDate = new DateOnly(2021, 1, 1) });
+            var actual = _subject.Render(template);
             
             // assert
             actual.Should().Be(expected);
@@ -55,7 +56,7 @@ namespace Domain.Tests
             var expected = $"My user profile is {Environment.GetEnvironmentVariable("userprofile")}";
             
             // act
-            var actual = _subject.Render(template, new { Environment = new EnvironmentVariables() });
+            var actual = _subject.Render(template);
             
             // assert
             actual.Should().Be(expected);
@@ -66,10 +67,10 @@ namespace Domain.Tests
         {
             // arrange
             var template = "{{ Environment.USERPROFILE }}\\dev\\tmp\\vault\\Daily Notes\\{{ NoteDate | format_date: \"yyyy-MM\" }}";
-            var expected = $"{Environment.GetEnvironmentVariable("userprofile")}\\dev\\tmp\\vault\\Daily Notes\\2021-01";
+            var expected = $"{Environment.GetEnvironmentVariable("userprofile")}\\dev\\tmp\\vault\\Daily Notes\\2025-01";
 
             // act
-            var actual = _subject.Render(template, new { NoteDate = new DateOnly(2021, 1, 1), Environment = new EnvironmentVariables() });
+            var actual = _subject.Render(template);
 
             // assert
             actual.Should().Be(expected);

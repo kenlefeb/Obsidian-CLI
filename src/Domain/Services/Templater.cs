@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using Fluid;
+using Obsidian.Domain.Abstractions.Services;
+using Obsidian.Domain.Abstractions.Settings;
 using Obsidian.Persistence;
 
 namespace Obsidian.Domain.Services
 {
-    public class Templater
+    public class Templater(ITemplateData data) : ITemplater
     {
-        public string Render(string template, object data)
+        public string Render(string template, object? data1 = null)
         {
             var parser = new FluidParser();
-            
 
             if (parser.TryParse(template, out var parsed, out var error))
             {
-                var context = new TemplateContext(data);
+                var context = new TemplateContext(data1 ?? data);
                 return parsed.Render(context);
             }
 
@@ -22,15 +23,4 @@ namespace Obsidian.Domain.Services
         }
     }
 
-    public struct TemplateData
-    {
-        private EnvironmentVariables _environment;
-        public DateOnly NoteDate { get; set; }
-
-        public EnvironmentVariables Environment
-        {
-            get { return _environment ??= new EnvironmentVariables(); }
-            set => _environment = value;
-        }
-    }
 }

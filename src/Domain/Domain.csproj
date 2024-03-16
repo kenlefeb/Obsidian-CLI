@@ -1,23 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<RootNamespace>Obsidian.Domain</RootNamespace>
-		<VersionPrefix>0.0.1</VersionPrefix>
-		<VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
-		<Company>Blacksmith Press</Company>
-		<Copyright>Copyright © Kenneth LeFebvre. All rights reserved.</Copyright>
-		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
-		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
-		<LangVersion>Latest</LangVersion>
-		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-		<RepositoryUrl>https://github.com/kenlefeb/obsidian-cli/</RepositoryUrl>
-		<Description>Domain library for working with an Obsidian vault.</Description>
-		<Title>Obsidian Domain</Title>
-	</PropertyGroup>
+  <PropertyGroup>
+	<TargetFramework>net8.0</TargetFramework>
+	<RootNamespace>Obsidian.Domain</RootNamespace>
+	<VersionPrefix>0.0.1</VersionPrefix>
+	<VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
+	<Company>Blacksmith Press</Company>
+	<Copyright>Copyright © Kenneth LeFebvre. All rights reserved.</Copyright>
+	<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
+	<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
+	<LangVersion>Latest</LangVersion>
+	<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+	<RepositoryUrl>https://github.com/kenlefeb/obsidian-cli/</RepositoryUrl>
+	<Description>Domain library for working with an Obsidian vault.</Description>
+	<Title>Obsidian Domain</Title>
+	<Nullable>enable</Nullable>
+  </PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Fluid.Core" Version="2.6.0" />
-	</ItemGroup>
+  <ItemGroup>
+	<PackageReference Include="Fluid.Core" Version="2.6.0" />
+  </ItemGroup>
 
 </Project>

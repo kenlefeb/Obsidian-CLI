@@ -44,7 +44,8 @@ public class DailyNotes : IQueryable<DailyNote>
 
     private static DirectoryInfo FindRootFolderForDailyNotes(Vault vault)
     {
-        var path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Root);
+        var info = new DirectoryInfo(vault.Path);
+        var path = Path.Combine(vault.Path, info.Root.Name);
         if (!Directory.Exists(path))
             _ = Directory.CreateDirectory(path);
 

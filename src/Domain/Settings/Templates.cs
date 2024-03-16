@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
+using Obsidian.Domain.Abstractions.Services;
+using Obsidian.Domain.Abstractions.Settings;
 
 namespace Obsidian.Domain.Settings;
 
-public class Templates
+public class Templates : ITemplates
 {
-    public string Path { get; set; } = @"library\\templates";
+
+    public string Path { get; set; }
+
     public IList<Template> Items { get; set; } = new List<Template>{
         new Template
         {

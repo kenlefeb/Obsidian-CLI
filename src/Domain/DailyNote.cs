@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Obsidian.Domain.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Obsidian.Domain;
 
@@ -39,7 +40,7 @@ public class DailyNote : Note
 
     private static string ComposeFileName(Vault vault, DateOnly date)
     {
-        var templater = new Templater();
+        var templater = new Templater(new TemplateData { NoteDate = date, Environment = new EnvironmentVariables() });
         return templater.Render(vault.Settings.DailyNotes.Name, new { NoteDate = date });
     }
 
@@ -63,14 +64,14 @@ public class DailyNote : Note
         if (!file.Exists)
             throw new FileNotFoundException($"Template file not found: {file.FullName}");
         var contents = System.IO.File.ReadAllText(file.FullName);
-        var templater = new Templater();
+        var templater = new Templater(new TemplateData { NoteDate = date, Environment = new EnvironmentVariables() });
         return templater.Render(contents, new { NoteDate = date });
     }
 
     private static FileInfo GetTemplateFile(Template template, Vault vault)
     {
         var path = Path.Combine(vault.Path, vault.Settings.Templates.Path, $"{template.Name}.md");
-        var templater = new Templater();
+        var templater = new Templater(new TemplateData { Environment = new EnvironmentVariables() });
         return new FileInfo(templater.Render(path, new {Environment = new EnvironmentVariables()}));
     }
 
@@ -91,8 +92,8 @@ public class DailyNote : Note
 
     private static string DeterminePath(Vault vault, DateOnly date, EnvironmentVariables environment)
     {
-        var path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Root, vault.Settings.DailyNotes.Folder);
-        var templater = new Templater();
+        var path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Path);
+        var templater = new Templater(new TemplateData { NoteDate = date, Environment = environment });
         return templater.Render(path, new { NoteDate = date, Environment = environment });
     }
 }

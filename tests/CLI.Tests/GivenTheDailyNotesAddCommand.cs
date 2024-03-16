@@ -28,8 +28,7 @@ namespace CLI.Tests
                         {
                             DailyNotes = new Obsidian.Domain.Settings.DailyNotes
                             {
-                                Root = "@",
-                                Folder = "{{ NoteDate | format_date: \"yyyy-MM\" }}",
+                                Path = "@\\{{ NoteDate | format_date: \"yyyy-MM\" }}",
                                 Name = "{{ NoteDate | format_date: \"yyyy-MM-dd\" }}.md",
                                 TemplateType = "Daily Note",
                                 SearchPattern = @"\d{4}-\d\d-\d\d\.md"
