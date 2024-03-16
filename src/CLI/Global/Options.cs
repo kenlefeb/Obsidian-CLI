@@ -1,6 +1,6 @@
 ﻿namespace Obsidian.CLI.Global
 {
-    internal class Options
+    public class Options
     {
         /// <summary>
         /// Gets or sets a value indicating whether this is a dry run

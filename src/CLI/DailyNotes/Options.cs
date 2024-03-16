@@ -1,6 +1,6 @@
 ﻿namespace Obsidian.CLI.DailyNotes
 {
-    internal class Options : Global.Options
+    public class Options : Global.Options
     {
     }
 }

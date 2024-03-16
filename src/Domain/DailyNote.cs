@@ -1,18 +1,21 @@
-﻿using HandlebarsDotNet;
+﻿
+using Obsidian.Persistence;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Obsidian.Domain.Services;
 
 namespace Obsidian.Domain;
 
 public class DailyNote : Note
 {
 
-    public DailyNote(Vault vault, DateOnly date)
+    public DailyNote(Vault vault, DateOnly date, EnvironmentVariables environment)
     {
         Vault = vault;
-        var path = DeterminePath(Vault, date);
+        var path = DeterminePath(Vault, date, environment);
         (Content, File) = GetContentAndFile(Vault, date, path);
     }
 
@@ -36,11 +39,8 @@ public class DailyNote : Note
 
     private static string ComposeFileName(Vault vault, DateOnly date)
     {
-        var template = vault.Settings.DailyNotes.Name;
-        Handlebars.RegisterHelper("date", DateHelper);
-        var compiled = Handlebars.Compile(template);
-        var data = new { date };
-        return compiled(data);
+        var templater = new Templater();
+        return templater.Render(vault.Settings.DailyNotes.Name, new { NoteDate = date });
     }
 
     private static DateOnly DetermineDate(FileInfo file)
@@ -63,16 +63,15 @@ public class DailyNote : Note
         if (!file.Exists)
             throw new FileNotFoundException($"Template file not found: {file.FullName}");
         var contents = System.IO.File.ReadAllText(file.FullName);
-        Handlebars.RegisterHelper("date", DateHelper);
-        var compiled = Handlebars.Compile(contents);
-        var data = new { date };
-        return compiled(data);
+        var templater = new Templater();
+        return templater.Render(contents, new { NoteDate = date });
     }
 
     private static FileInfo GetTemplateFile(Template template, Vault vault)
     {
         var path = Path.Combine(vault.Path, vault.Settings.Templates.Path, $"{template.Name}.md");
-        return new FileInfo(path);
+        var templater = new Templater();
+        return new FileInfo(templater.Render(path, new {Environment = new EnvironmentVariables()}));
     }
 
     private static Template DetermineTemplate(Vault vault, DateOnly date)
@@ -90,20 +89,10 @@ public class DailyNote : Note
         return new DirectoryInfo(path);
     }
 
-    private static string DeterminePath(Vault vault, DateOnly date)
+    private static string DeterminePath(Vault vault, DateOnly date, EnvironmentVariables environment)
     {
-        var template = vault.Settings.DailyNotes.Folder;
-        Handlebars.RegisterHelper("date", DateHelper);
-        var compiled = Handlebars.Compile(template);
-        var data = new { date };
-        var path = compiled(data);
-        return Path.Combine(vault.Path, vault.Settings.DailyNotes.Root, path);
-    }
-
-    private static void DateHelper(EncodedTextWriter output, Context context, Arguments arguments)
-    {
-        var date = DateOnly.Parse($"{context["date"]}");
-        var format = $"{arguments[0]}";
-        output.WriteSafeString(date.ToString(format));
+        var path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Root, vault.Settings.DailyNotes.Folder);
+        var templater = new Templater();
+        return templater.Render(path, new { NoteDate = date, Environment = environment });
     }
 }

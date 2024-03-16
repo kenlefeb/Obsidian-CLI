@@ -2,7 +2,7 @@
 
 namespace Obsidian.CLI.Global
 {
-    internal class VerboseOption()
+    public class VerboseOption()
         : Option<bool>(new string[] { "--verbose", "-v" }, "Show verbose output")
     {
     }

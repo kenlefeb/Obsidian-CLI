@@ -7,7 +7,7 @@
     <VersionPrefix>0.0.1</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
     <Company>Blacksmith Press</Company>
-    <Copyright>Copyright (c) Kenneth LeFebvre. All rights reserved.</Copyright>
+    <Copyright>Copyright © Kenneth LeFebvre. All rights reserved.</Copyright>
     <RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <LangVersion>Latest</LangVersion>

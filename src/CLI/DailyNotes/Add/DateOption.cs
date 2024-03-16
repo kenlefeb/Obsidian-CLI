@@ -4,7 +4,7 @@ using System.CommandLine.Parsing;
 
 namespace Obsidian.CLI.DailyNotes.Add
 {
-    internal class DateOption() : Option<DateOnly>(ALIASES, ParseArgument, false,
+    public class DateOption() : Option<DateOnly>(ALIASES, ParseArgument, false,
         "The for which to create a Daily Note. Defaults to today.")
     {
         private static readonly string[] ALIASES = ["--date", "-d"];

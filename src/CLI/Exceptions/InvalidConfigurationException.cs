@@ -2,4 +2,4 @@
 
 namespace Obsidian.CLI.Exceptions;
 
-internal class InvalidConfigurationException(string message) : Exception(message);
+public class InvalidConfigurationException(string message) : Exception(message);

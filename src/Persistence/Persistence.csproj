@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
-		<RootNamespace>Obsidian.Domain</RootNamespace>
+		<RootNamespace>Obsidian.Persistence</RootNamespace>
 		<VersionPrefix>0.0.1</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::UtcNow.ToString(`MMdd-HHmm`))</VersionSuffix>
 		<Company>Blacksmith Press</Company>
@@ -16,8 +16,8 @@
 		<Title>Obsidian Domain</Title>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Fluid.Core" Version="2.6.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
 
 </Project>

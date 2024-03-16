@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright © Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -9,7 +9,7 @@ namespace Obsidian.CLI;
 /// <summary>
 /// Main application class
 /// </summary>
-internal class Program
+public class Program
 {
     /// <summary>
     /// Main entry point

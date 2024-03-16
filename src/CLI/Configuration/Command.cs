@@ -1,6 +1,6 @@
 ﻿namespace Obsidian.CLI.Configuration
 {
-    internal class Command : System.CommandLine.Command
+    public class Command : System.CommandLine.Command
     {
         public Command(Global.Configuration configuration)
             : base("configuration", "Manipulate the settings for Obsidian CLI.")

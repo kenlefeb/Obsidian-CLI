@@ -2,7 +2,7 @@
 
 namespace Obsidian.CLI.Global
 {
-    internal class DryRunOption()
+    public class DryRunOption()
         : Option<bool>(new string[] { "--dry-run", "-d" }, "Validates and displays configuration")
     {
     }
