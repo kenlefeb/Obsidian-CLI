@@ -9,22 +9,27 @@ namespace Obsidian.Persistence
     {
         private readonly ILogger<Vault> _logger;
         private readonly IFileSystem _filesystem;
-        private readonly IVaultSettings _settings;
+        private readonly DailyNotes _dailyNotes;
 
-        public Vault(ILogger<Vault> logger, IFileSystem filesystem, IVaultSettings settings)
+        public Vault(ILogger<Vault> logger, IFileSystem filesystem, IVaultSettings settings, IEnvironmentVariables environment)
         {
             _logger = logger;
             _filesystem = filesystem;
-            _settings = settings;
+            Environment = environment;
+            Settings = settings;
+            _dailyNotes = new DailyNotes(this);    // TODO: Replace with a Notes repository that includes DailyNotes
         }
 
-        public bool Exists => _filesystem.Directory.Exists(_settings.Path);
+        public bool Exists => _filesystem.Directory.Exists(Settings.Path);
 
-        public string Path => _settings.Path;
+        public string Path => Settings.Path;
+        public Domain.Abstractions.Settings.IVaultSettings Settings { get; private set; }
+        public IEnvironmentVariables Environment { get; }
 
-        public static Vault Create(ILogger<Vault> logger, IFileSystem filesystem, IVaultSettings settings)
+        // TODO: Replace Create method with DI container
+        public static Vault Create(ILogger<Vault> logger, IFileSystem filesystem, IVaultSettings settings, IEnvironmentVariables environment)
         {
-            var vault= new Vault(logger, filesystem, settings);
+            var vault= new Vault(logger, filesystem, settings, environment);
             if (!vault.Exists)
             {
                 filesystem.Directory.CreateDirectory(vault.Path);
@@ -35,7 +40,7 @@ namespace Obsidian.Persistence
 
         public Note AddDailyNote(DateOnly date, bool force)
         {
-            throw new NotImplementedException();
+            return new DailyNote(this, date);
         }
     }
 }

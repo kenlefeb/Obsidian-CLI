@@ -10,7 +10,6 @@ namespace Obsidian.Domain
         public Vault(EnvironmentVariables environment)
         {
             DailyNotes = new DailyNotes(this, environment);
-
         }
 
         public string Name { get; set; }

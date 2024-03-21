@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Obsidian.Persistence
 {
-    public class EnvironmentVariables : IDictionary<string,string>
+    public class EnvironmentVariables : IEnvironmentVariables
     {
         private readonly IDictionary<string, string> _environment = new Dictionary<string, string>();
 

@@ -6,45 +6,44 @@ using System.Text;
 using System.Threading.Tasks;
 using Divergic.Logging.Xunit;
 using FluentAssertions;
-using Obsidian.Domain.Abstractions.Settings;
-using Obsidian.Domain.Services;
-using Obsidian.Domain.Settings;
-using Obsidian.Persistence;
+using Obsidian;
 using Xunit.Abstractions;
 
-namespace Persistence.Tests
+namespace Obsidian.Persistence.Tests
 {
     public class GivenVault
     {
-        private readonly ICacheLogger<Vault> _logger;
+        private readonly ICacheLogger<Persistence.Vault> _logger;
         private readonly MockFileSystem _filesystem;
-        private readonly IVaultSettings _settings;
-        private readonly Templater _templater;
+        private readonly Domain.Abstractions.Settings.IVaultSettings _settings;
+        private readonly Domain.Services.Templater _templater;
+        private readonly IEnvironmentVariables _environment;
 
         public GivenVault(ITestOutputHelper output)
         {
             _logger = output.BuildLoggerFor<Vault>();
-            _templater = new Templater(new TemplateData
+            _environment = new EnvironmentVariables
             {
-                Environment = new Dictionary<string, string>
-                {
-                    { "USERPROFILE", "O:\\kenlefeb" },
-                    { "EnvironmentVariable2", "Value2" }
-                },
+                { "USERPROFILE", "O:\\kenlefeb" },
+                { "EnvironmentVariable2", "Value2" }
+            };
+            _templater = new Domain.Services.Templater(new Domain.Services.TemplateData
+            {
+                Environment = _environment,
                 NoteDate = new DateOnly(2025,01,01)
             });
             _filesystem = new MockFileSystem();
-            _settings = new VaultSettings
+            _settings = new Domain.Settings.VaultSettings
             {
                 Path = @"{{ Environment.USERPROFILE }}\Documents\Obsidian\Vault",
-                DailyNotes = new DailyNotes
+                DailyNotes = new Domain.Settings.DailyNotes
                 {
                     Path = @"@\{{ NoteDate | format_date: ""yyyy\MM MMMM\dd dddd"" }}",
                     Name = "{{ NoteDate | format_date: \"yyyy-MM-dd\" }}.md",
                     TemplateType = "Daily Note",
                     SearchPattern = @"\d{4}-\d\d-\d\d\.md"
                 },
-                Templates = new Templates
+                Templates = new Domain.Settings.Templates
                 {
                     Path = @"=\Obsidian\Templates",
                 }
@@ -57,7 +56,7 @@ namespace Persistence.Tests
             // arrange
 
             // act
-            var subject = Vault.Create(_logger, _filesystem, _settings);
+            var subject = Vault.Create(_logger, _filesystem, _settings, _environment);
 
             // assert
             subject.Exists.Should().BeTrue();
@@ -69,7 +68,7 @@ namespace Persistence.Tests
             // arrange
 
             // act
-            var subject = new Vault(_logger, _filesystem, _settings);
+            var subject = new Vault(_logger, _filesystem, _settings, _environment);
 
             // assert
             subject.Exists.Should().BeFalse();

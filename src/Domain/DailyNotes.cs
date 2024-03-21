@@ -19,38 +19,8 @@ public class DailyNotes : IQueryable<DailyNote>
     {
         _vault = vault;
         _environment = environment;
-        _notes = new Lazy<IQueryable<DailyNote>>(() =>
-        {
-            var pattern = ComposeSearchPattern(vault);
-            var folder = FindRootFolderForDailyNotes(vault);
-            return FindDailyNotes(folder, pattern);
-        });
     }
 
-    private IQueryable<DailyNote> FindDailyNotes(DirectoryInfo folder, string pattern)
-    {
-        Regex regex = new(pattern);
-
-        return Directory.GetFiles(folder.FullName, pattern)
-            .Where(path => regex.IsMatch(path))
-            .Select(path => new DailyNote(_vault, path))
-            .AsQueryable();
-    }
-
-    private static string ComposeSearchPattern(Vault vault)
-    {
-        return vault.Settings.DailyNotes.SearchPattern;
-    }
-
-    private static DirectoryInfo FindRootFolderForDailyNotes(Vault vault)
-    {
-        var info = new DirectoryInfo(vault.Path);
-        var path = Path.Combine(vault.Path, info.Root.Name);
-        if (!Directory.Exists(path))
-            _ = Directory.CreateDirectory(path);
-
-        return new DirectoryInfo(path);
-    }
 
     public IEnumerator<DailyNote> GetEnumerator()
     {
@@ -67,15 +37,4 @@ public class DailyNotes : IQueryable<DailyNote>
     public Expression Expression => _notes.Value.Expression;
 
     public IQueryProvider Provider => _notes.Value.Provider;
-
-    public DailyNote Create(DateOnly? date = null)
-    {
-        var theDate = DetermineDate(date);
-        return new DailyNote(_vault, theDate, _environment);
-    }
-
-    private static DateOnly DetermineDate(DateOnly? date)
-    {
-        return date ?? DateOnly.FromDateTime(DateTime.Now);
-    }
 }
