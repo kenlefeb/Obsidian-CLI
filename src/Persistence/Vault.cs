@@ -1,4 +1,5 @@
-﻿using System.IO.Abstractions;
+﻿using System;
+using System.IO.Abstractions;
 using Microsoft.Extensions.Logging;
 using Obsidian.Domain.Abstractions.Settings;
 
@@ -30,6 +31,11 @@ namespace Obsidian.Persistence
             }
 
             return vault;
+        }
+
+        public Note AddDailyNote(DateOnly date, bool force)
+        {
+            throw new NotImplementedException();
         }
     }
 }
