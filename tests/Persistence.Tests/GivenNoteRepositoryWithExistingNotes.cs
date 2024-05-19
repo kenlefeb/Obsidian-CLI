@@ -134,5 +134,24 @@ namespace Obsidian.Persistence.Tests
             newNote.Id.Should().NotBe(existingId);
         }
 
+        [Fact]
+        public void AddWithExistingPath_ShouldThrowException()
+        {
+            // Arrange
+            var existingId = "O:\\Vault\\@\\2024\\02 February\\01 Thursday\\2024-02-01.md";
+            var newNote = new Note
+            {
+                Id = existingId,
+                Title = "01 Thursday (again)",
+                Contents = "This is a new note with a \"uniqueified\" name"
+            };
+
+            // Act
+            _subject.Invoking(x => x.Add(newNote))
+
+                // Assert
+                .Should().Throw<NoteAlreadyExistsException>()
+                .WithMessage($"A note with Id '{existingId}' already exists.");
+        }
     }
 }
