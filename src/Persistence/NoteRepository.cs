@@ -1,54 +1,116 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
 
 using Obsidian.Domain;
 using Obsidian.Domain.Abstractions;
-using Obsidian.Persistence;
+using Obsidian.Domain.Settings;
 
-using Parlot.Fluent;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Abstractions;
+using System.Text.RegularExpressions;
 
 namespace Obsidian.Persistence
 {
-    public class NoteRepository(Vault vault) : IRepository<Note>
+    public class NoteRepository(VaultSettings settings, IFileSystem filesystem, ILogger<NoteRepository> logger) : IRepository<Note>
     {
-        private readonly Vault _vault = vault ?? throw new ArgumentNullException(nameof(vault));
-
         public IEnumerable<Note> GetAll()
         {
-            return _vault.GetFiles("*.md").Select(file => new Note(_vault, file.FullName));
+            var filespec = "*.md";
+            var files = filesystem.Directory.GetFiles(settings.Path, filespec, SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                yield return Get(file);
+            }
         }
 
-        public Note GetById(string id)
+        public Note Get(string id)
         {
-            var file = _vault.GetFile(id);
-            if (file == null)
-                throw new FileNotFoundException($"Note with id '{id}' not found.");
-            return new Note(_vault, file.FullName);
+            if (!Exists(id))
+                throw new NoteNotFoundException(id);
+
+            var info = filesystem.FileInfo.New(id);
+            var contents = filesystem.File.ReadAllText(info.FullName);
+            return new Note
+            {
+                Id = info.FullName,
+                Contents = contents
+            };
         }
 
         public void Add(Note note)
         {
-            _vault.WriteTextFile(note.Id, note.Contents);
+            if (Exists(note.Id))
+                throw new NoteAlreadyExistsException(note.Id);
+
+            var id = GuaranteeUniqueId(note.Id);
+            var info = filesystem.FileInfo.New(id);
+            if (!info?.Directory?.Exists ?? false)
+                filesystem.Directory.CreateDirectory(info.Directory.FullName);
+
+            filesystem.File.WriteAllText(info.FullName, note.Contents);
+        }
+
+        private string GuaranteeUniqueId(string id)
+        {
+            var fileInfo = filesystem.FileInfo.New(id);
+            var path = fileInfo.Directory.FullName;
+            var name = GetBaseName(fileInfo);
+            var extension = fileInfo.Extension;
+            var counter = 1;
+
+            while (Exists(id))
+            {
+                id = Path.Combine(path, $"{name} ({counter++}){extension}");
+            }
+            return id;
+        }
+
+        private string GetBaseName(IFileInfo fileInfo)
+        {
+            var baseName = Path.GetFileNameWithoutExtension(fileInfo.Name);
+            var regex = new Regex(@"\s+\(\d+\)$");
+
+            if (regex.IsMatch(baseName))
+            {
+                var index = baseName.LastIndexOf(" (");
+                if (index > 0)
+                {
+                    baseName = baseName.Substring(0, index);
+                }
+            }
+            return baseName.Trim();
+        }
+
+        private bool Exists(string id)
+        {
+            return filesystem.FileInfo.New(id).Exists;
         }
 
         public void Update(Note note)
         {
-            var file = _vault.GetFile(note.Id);
-            if (file == null)
-                throw new FileNotFoundException($"Note with id '{note.Id}' not found.");
-            _vault.WriteTextFile(note.Id, note.Contents);
+            if (!Exists(note.Id))
+                throw new NoteNotFoundException(note.Id);
+
+            var info = filesystem.FileInfo.New(note.Id);
+            filesystem.File.WriteAllText(info.FullName, note.Contents);
         }
 
         public void Delete(string id)
         {
-            var file = _vault.GetFile(id);
-            if (file == null)
-                throw new FileNotFoundException($"Note with id '{id}' not found.");
-            _vault.DeleteFile(file.FullName);
+            if (!Exists(id))
+                throw new NoteNotFoundException(id);
+
+            var info = filesystem.FileInfo.New(id);
+            info.Delete();
+        }
+
+        public IEnumerable<Note> Find(string pattern)
+        {
+            var files = filesystem.Directory.GetFiles(settings.Path, pattern, SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                yield return Get(file);
+            }
         }
     }
 }

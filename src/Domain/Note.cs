@@ -1,10 +1,21 @@
-﻿using System.IO;
-
-namespace Obsidian.Domain;
+﻿namespace Obsidian.Domain;
 
 public class Note
 {
-    public Vault Vault { get; set; }
-    public FileInfo File { get; set; }
-    public string Content { get; set; }
+    private string _title;
+
+    public string Id { get; set; }
+
+    public string Title
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_title))
+                _title = Id;
+            return _title;
+        }
+        set => _title = value;
+    }
+
+    public string Contents { get; set; }
 }
