@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Obsidian.Persistence;
+﻿using FluentAssertions;
 
-namespace Persistence.Tests
+namespace Obsidian.Persistence.Tests
 {
     public class GivenEnvironmentVariables
     {
