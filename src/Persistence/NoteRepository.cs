@@ -39,7 +39,12 @@ namespace Obsidian.Persistence
 
         public void Add(Note note)
         {
-            if (Exists(note.Id))
+            Add(note, false);
+        }
+
+        public void Add(Note note, bool force)
+        {
+            if (!force && Exists(note.Id))
                 throw new NoteAlreadyExistsException(note.Id);
 
             var id = GuaranteeUniqueId(note.Id);
@@ -48,6 +53,7 @@ namespace Obsidian.Persistence
                 filesystem.Directory.CreateDirectory(info.Directory.FullName);
 
             filesystem.File.WriteAllText(info.FullName, note.Contents);
+            note.Id = id;
         }
 
         private string GuaranteeUniqueId(string id)

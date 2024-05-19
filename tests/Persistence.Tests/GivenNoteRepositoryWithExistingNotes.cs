@@ -106,5 +106,33 @@ namespace Obsidian.Persistence.Tests
             var contents = _fileSystem.File.ReadAllText(actual.FullName);
             contents.Should().Be(newNote.Contents);
         }
+
+        [Fact]
+        public void ForceAddWithExistingPath_ShouldCreateNewNote()
+        {
+            // Arrange
+            var existingId = "O:\\Vault\\@\\2024\\02 February\\01 Thursday\\2024-02-01.md";
+            var newNote = new Note
+            {
+                Id = existingId,
+                Title = "01 Thursday (again)",
+                Contents = "This is a new note with a \"uniqueified\" name"
+            };
+
+            // Act
+            _subject.Add(newNote, force: true);
+
+            // Assert the file exists
+            var actual = _fileSystem.FileInfo.New(newNote.Id);
+            actual.Exists.Should().BeTrue();
+
+            // Assert the contents are correct
+            var contents = _fileSystem.File.ReadAllText(actual.FullName);
+            contents.Should().Be(newNote.Contents);
+
+            // Assert the Id was changed
+            newNote.Id.Should().NotBe(existingId);
+        }
+
     }
 }
