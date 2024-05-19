@@ -142,8 +142,8 @@ namespace Obsidian.Persistence.Tests
             var newNote = new Note
             {
                 Id = existingId,
-                Title = "01 Thursday (again)",
-                Contents = "This is a new note with a \"uniqueified\" name"
+                Title = "01 Thursday",
+                Contents = "This is a new note"
             };
 
             // Act
@@ -152,6 +152,44 @@ namespace Obsidian.Persistence.Tests
                 // Assert
                 .Should().Throw<NoteAlreadyExistsException>()
                 .WithMessage($"A note with Id '{existingId}' already exists.");
+        }
+
+        [Fact]
+        public void UpdatingExistingNote_ShouldChangeNote()
+        {
+            // Arrange
+            var existingId = "O:\\Vault\\@\\2024\\02 February\\01 Thursday\\2024-02-01.md";
+            var updatedNote = new Note
+            {
+                Id = existingId,
+                Title = "01 Thursday (updated)",
+                Contents = "This is an existing note with a modified content"
+            };
+
+            // Act
+            _subject.Update(updatedNote);
+
+            // Assert the file exists
+            var actual = _fileSystem.FileInfo.New(updatedNote.Id);
+            actual.Exists.Should().BeTrue();
+
+            // Assert the contents are correct
+            var contents = _fileSystem.File.ReadAllText(actual.FullName);
+            contents.Should().Be(updatedNote.Contents);
+        }
+
+        [Fact]
+        public void DeletingExistingNote_ShouldDeleteNoteFile()
+        {
+            // Arrange
+            var id = "O:\\Vault\\@\\2024\\02 February\\01 Thursday\\2024-02-01.md";
+
+            // Act
+            _subject.Delete(id);
+
+            // Assert the file exists
+            var actual = _fileSystem.FileInfo.New(id);
+            actual.Exists.Should().BeFalse();
         }
     }
 }
