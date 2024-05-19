@@ -31,7 +31,9 @@ namespace Obsidian.Persistence.Tests
             });
             _filesystem = new MockFileSystem(new Dictionary<string, MockFileData>
             {
-                {@"O:\kenlefeb\Documents\Obsidian\Vault\@\2024\03 March\21 Thursday\2024-03-21.md", new MockFileData("Existing Daily Note")}
+                {@"O:\kenlefeb\Documents\Obsidian\Vault\@\2024\03 March\21 Thursday\2024-03-21.md", new MockFileData("Existing Daily Note")},
+                {@"O:\kenlefeb\Documents\Obsidian\Vault\=\Obsidian\Templates\Daily Note.md", new MockFileData("Existing Daily Note")},
+                {@"O:\kenlefeb\Documents\Obsidian\Vault\=\Obsidian\Templates\Default.md", new MockFileData("Default Template")}
             });
             _settings = new Domain.Settings.VaultSettings
             {
@@ -47,8 +49,8 @@ namespace Obsidian.Persistence.Tests
                 {
                     Path = @"=\Obsidian\Templates",
                 }
-            }.Render(_templater);
-            _vault = Vault.Create(_logger, _filesystem, _settings, _environment);
+            };
+            _vault = Vault.Create(_logger, _filesystem, _settings, _environment, _templater);
         }
 
         [Fact]

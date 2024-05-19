@@ -4,6 +4,7 @@ using Obsidian.Domain;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,59 +20,67 @@ namespace Obsidian.Persistence
             (Contents, File) = GetContentAndFile(Vault, date, path);
         }
 
-        public DailyNote(Vault vault, DateOnly date) : base(vault)
+        public DailyNote(Vault vault, DateOnly date, bool force = false) : base(vault)
         {
             var path = DeterminePath(Vault, date, Vault.Environment);
-            (Contents, File) = GetContentAndFile(Vault, date, path);
+            (Contents, File) = GetContentAndFile(Vault, date, path, force);
         }
 
         public DateOnly Date { get; set; }
 
-        private static (string, FileInfo) GetContentAndFile(Vault vault, DateOnly date, string path)
+        private (string, IFileInfo) GetContentAndFile(Vault vault, DateOnly date, string path, bool force = false)
         {
             var folder = GetFolder(path);
-            var template = DetermineTemplate(vault, date);
-            var content = CreateNoteContent(template, vault, date);
             var name = ComposeFileName(vault, date);
-            var file = CreateFile(folder, name, content);
+            var filespec = Path.Combine(folder.FullName, name);
+            var file = vault.GetFile(filespec);
+            var content = default(string);
+            
+            if (force || !file.Exists)
+            {
+                var template = DetermineTemplate(vault, date);
+                content = CreateNoteContent(template, vault, date);
+                file = CreateFile(folder, name, content);
+            }
+            else
+            {
+                content = Vault.ReadTextFile(file.FullName);
+            }
             return (content, file);
         }
 
-        private static string ComposeFileName(Vault vault, DateOnly date)
+        private string ComposeFileName(Vault vault, DateOnly date)
         {
-            var templater = new Templater(new TemplateData { NoteDate = date, Environment = new EnvironmentVariables() });
-            return templater.Render(vault.Settings.DailyNotes.Name, new { NoteDate = date });
+            return Vault.Templater.Render(vault.Settings.DailyNotes.Name, new { NoteDate = date });
         }
 
-        private static DateOnly DetermineDate(FileInfo file)
+        private static DateOnly DetermineDate(IFileInfo file)
         {
             var name = file.Name;
             var date = DateOnly.Parse(name);
             return date;
         }
 
-        private static FileInfo CreateFile(DirectoryInfo folder, string name, string note)
+        private IFileInfo CreateFile(IDirectoryInfo folder, string name, string note)
         {
             var path = Path.Combine(folder.FullName, name);
-            System.IO.File.WriteAllText(path, note);
-            return new FileInfo(path);
+            Vault.WriteTextFile(path, note);
+            return Vault.GetFile(path);
         }
 
-        private static string CreateNoteContent(Template template, Vault vault, DateOnly date)
+        private string CreateNoteContent(Template template, Vault vault, DateOnly date)
         {
             var file = GetTemplateFile(template, vault);
             if (!file.Exists)
                 throw new FileNotFoundException($"Template file not found: {file.FullName}");
-            var contents = System.IO.File.ReadAllText(file.FullName);
-            var templater = new Templater(new TemplateData { NoteDate = date, Environment = new EnvironmentVariables() });
-            return templater.Render(contents, new { NoteDate = date });
+            var contents = Vault.ReadTextFile(file.FullName);
+            return Vault.Templater.Render(contents, new { NoteDate = date });
         }
 
-        private static FileInfo GetTemplateFile(Template template, Vault vault)
+        private IFileInfo GetTemplateFile(Template template, Vault vault)
         {
             var path = Path.Combine(vault.Path, vault.Settings.Templates.Path, $"{template.Name}.md");
-            var templater = new Templater(new TemplateData { Environment = new EnvironmentVariables() });
-            return new FileInfo(templater.Render(path, new { Environment = new EnvironmentVariables() }));
+            return Vault.GetFile(Vault.Templater.Render(path, new { Environment = new EnvironmentVariables() }));
         }
 
         private static Template DetermineTemplate(Vault vault, DateOnly date)
@@ -82,19 +91,19 @@ namespace Obsidian.Persistence
             return template ?? throw new FileNotFoundException($"No template found for {type} on {date}");
         }
 
-        private static DirectoryInfo GetFolder(string path)
+        private IDirectoryInfo GetFolder(string path)
         {
-            if (!Directory.Exists(path))
-                _ = Directory.CreateDirectory(path!);
-            return new DirectoryInfo(path);
+            if (!Vault.DirectoryExists(path))
+                _ = Vault.CreateDirectory(path!);
+            return Vault.GetDirectory(path);
         }
 
-        private static string DeterminePath(Vault vault, DateOnly date, IEnvironmentVariables environment)
+        private string DeterminePath(Vault vault, DateOnly date, IEnvironmentVariables environment)
         {
-            var path = Path.Combine(vault.Path, vault.Settings.DailyNotes.Path);
-            var templater = new Templater(new TemplateData { NoteDate = date, Environment = environment });
-            return templater.Render(path, new { NoteDate = date, Environment = environment });
+            var path = Path.Combine(vault.Path, vault.Settings.Render(Vault.Templater).DailyNotes.Path);
+            return Vault.Templater.Render(path, new { NoteDate = date, Environment = environment });
         }
 
+        
     }
 }

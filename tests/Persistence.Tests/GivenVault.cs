@@ -59,7 +59,7 @@ namespace Obsidian.Persistence.Tests
             // arrange
 
             // act
-            var subject = Vault.Create(_logger, _filesystem, _settings, _environment);
+            var subject = Vault.Create(_logger, _filesystem, _settings, _environment, _templater);
 
             // assert
             subject.Exists.Should().BeTrue();
@@ -71,7 +71,7 @@ namespace Obsidian.Persistence.Tests
             // arrange
 
             // act
-            var subject = new Vault(_logger, _filesystem, _settings, _environment);
+            var subject = new Vault(_logger, _filesystem, _settings, _environment, _templater);
 
             // assert
             subject.Exists.Should().BeFalse();
