@@ -1,9 +1,6 @@
-﻿using Obsidian.Domain.Abstractions.Services;
-using Obsidian.Domain.Abstractions.Settings;
+﻿namespace Obsidian.Domain.Settings;
 
-namespace Obsidian.Domain.Settings;
-
-public class DailyNotes : IDailyNotes
+public class DailyNotes
 {
     public string Path { get; set; } = "@\\{{ NoteDate | format_date: \"yyyy-MM\" }}";
     public string Name { get; set; } = "{{ NoteDate | format_date: \"yyyy-MM-dd\" }}.md";

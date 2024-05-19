@@ -1,7 +1,9 @@
 ﻿using System.IO.Abstractions.TestingHelpers;
+
 using Divergic.Logging.Xunit;
+
 using FluentAssertions;
-using Obsidian;
+using Obsidian.Domain.Settings;
 using Xunit.Abstractions;
 
 namespace Obsidian.Persistence.Tests
@@ -11,18 +13,17 @@ namespace Obsidian.Persistence.Tests
         private readonly ICacheLogger<Persistence.Vault> _logger;
         private readonly Domain.Services.Templater _templater;
         private readonly MockFileSystem _filesystem;
-        private readonly Domain.Abstractions.Settings.IVaultSettings _settings;
+        private readonly VaultSettings _settings;
         private readonly Vault _vault;
         private readonly IEnvironmentVariables _environment;
 
         public GivenExistingDailyNote(ITestOutputHelper output)
         {
             _logger = output.BuildLoggerFor<Vault>();
-            _environment = new EnvironmentVariables
-            {
+            _environment = new EnvironmentVariables(new Dictionary<string, string>{
                 { "USERPROFILE", "O:\\kenlefeb" },
                 { "EnvironmentVariable2", "Value2" }
-            };
+            });
             _templater = new Domain.Services.Templater(new Domain.Services.TemplateData
             {
                 Environment = _environment,
@@ -37,7 +38,7 @@ namespace Obsidian.Persistence.Tests
                 Path = @"{{ Environment.USERPROFILE }}\Documents\Obsidian\Vault",
                 DailyNotes = new Domain.Settings.DailyNotes
                 {
-                    Path = @"@\{{ NoteDate | format_date: ""yyyy\MM MMMM\dd dddd"" }}",
+                    Path = @"{{ NoteDate | format_date: ""yyyy\\\\MM MMMM\\\\dd dddd"" }}",
                     Name = "{{ NoteDate | format_date: \"yyyy-MM-dd\" }}.md",
                     TemplateType = "Daily Note",
                     SearchPattern = @"\d{4}-\d\d-\d\d\.md"
@@ -60,7 +61,7 @@ namespace Obsidian.Persistence.Tests
             };
 
             // act
-            var actual = _vault.AddDailyNote(date: new DateOnly(2024, 03, 21), force:false);
+            var actual = _vault.AddDailyNote(date: new DateOnly(2024, 03, 21), force: false);
 
             // assert
             actual.Should().BeEquivalentTo(expected);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO.Abstractions;
 using Microsoft.Extensions.Logging;
-using Obsidian.Domain.Abstractions.Settings;
+using Obsidian.Domain.Settings;
 
 namespace Obsidian.Persistence
 {
@@ -11,7 +11,7 @@ namespace Obsidian.Persistence
         private readonly IFileSystem _filesystem;
         private readonly DailyNotes _dailyNotes;
 
-        public Vault(ILogger<Vault> logger, IFileSystem filesystem, IVaultSettings settings, IEnvironmentVariables environment)
+        public Vault(ILogger<Vault> logger, IFileSystem filesystem, VaultSettings settings, IEnvironmentVariables environment)
         {
             _logger = logger;
             _filesystem = filesystem;
@@ -23,11 +23,11 @@ namespace Obsidian.Persistence
         public bool Exists => _filesystem.Directory.Exists(Settings.Path);
 
         public string Path => Settings.Path;
-        public Domain.Abstractions.Settings.IVaultSettings Settings { get; private set; }
+        public VaultSettings Settings { get; private set; }
         public IEnvironmentVariables Environment { get; }
 
         // TODO: Replace Create method with DI container
-        public static Vault Create(ILogger<Vault> logger, IFileSystem filesystem, IVaultSettings settings, IEnvironmentVariables environment)
+        public static Vault Create(ILogger<Vault> logger, IFileSystem filesystem, VaultSettings settings, IEnvironmentVariables environment)
         {
             var vault= new Vault(logger, filesystem, settings, environment);
             if (!vault.Exists)

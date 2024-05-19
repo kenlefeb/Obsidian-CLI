@@ -19,4 +19,9 @@ public interface IEnvironmentVariables : IDictionary<string, string>
     void Clear();
     bool Contains(KeyValuePair<string, string> item);
     void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex);
+
+    void Update(string key, string value);
+    void Update(KeyValuePair<string, string> item);
+    void AddOrUpdate(string key, string value);
+    void AddOrUpdate(KeyValuePair<string, string> item);
 }

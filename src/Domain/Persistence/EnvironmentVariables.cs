@@ -15,7 +15,7 @@ namespace Obsidian.Persistence
             {
                 if (entry.Key is string key && entry.Value is string value)
                 {
-                    _environment.Add(key, value);
+                    AddOrUpdate(key, value);
                 }
             }
         }
@@ -78,6 +78,33 @@ namespace Obsidian.Persistence
         public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)
         {
             _environment.CopyTo(array, arrayIndex);
+        }
+
+        public void Update(string key, string value)
+        {
+            this[key] = value;
+        }
+
+        public void Update(KeyValuePair<string, string> item)
+        { 
+            Update(item.Key, item.Value);
+        }
+
+        public void AddOrUpdate(string key, string value)
+        {
+            if (_environment.ContainsKey(key))
+            {
+                Update(key, value);
+            }
+            else
+            {
+                Add(key, value);
+            }
+        }
+
+        public void AddOrUpdate(KeyValuePair<string, string> item)
+        {
+            AddOrUpdate(item.Key, item.Value);
         }
 
         public bool Remove(KeyValuePair<string, string> item)

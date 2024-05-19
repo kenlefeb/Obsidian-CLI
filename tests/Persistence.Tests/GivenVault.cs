@@ -4,9 +4,13 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Divergic.Logging.Xunit;
+
 using FluentAssertions;
+
 using Obsidian;
+using Obsidian.Domain.Settings;
 using Xunit.Abstractions;
 
 namespace Obsidian.Persistence.Tests
@@ -15,22 +19,21 @@ namespace Obsidian.Persistence.Tests
     {
         private readonly ICacheLogger<Persistence.Vault> _logger;
         private readonly MockFileSystem _filesystem;
-        private readonly Domain.Abstractions.Settings.IVaultSettings _settings;
+        private readonly VaultSettings _settings;
         private readonly Domain.Services.Templater _templater;
         private readonly IEnvironmentVariables _environment;
 
         public GivenVault(ITestOutputHelper output)
         {
             _logger = output.BuildLoggerFor<Vault>();
-            _environment = new EnvironmentVariables
-            {
+            _environment = new EnvironmentVariables(new Dictionary<string, string>{
                 { "USERPROFILE", "O:\\kenlefeb" },
                 { "EnvironmentVariable2", "Value2" }
-            };
+            });
             _templater = new Domain.Services.Templater(new Domain.Services.TemplateData
             {
                 Environment = _environment,
-                NoteDate = new DateOnly(2025,01,01)
+                NoteDate = new DateOnly(2025, 01, 01)
             });
             _filesystem = new MockFileSystem();
             _settings = new Domain.Settings.VaultSettings

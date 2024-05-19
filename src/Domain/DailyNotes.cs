@@ -37,4 +37,9 @@ public class DailyNotes : IQueryable<DailyNote>
     public Expression Expression => _notes.Value.Expression;
 
     public IQueryProvider Provider => _notes.Value.Provider;
+
+    public DailyNote Create(DateOnly date)
+    {
+        throw new NotImplementedException();
+    }
 }

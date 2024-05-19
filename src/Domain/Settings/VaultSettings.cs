@@ -1,15 +1,13 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using Obsidian.Domain.Abstractions.Services;
-using Obsidian.Domain.Abstractions.Settings;
+﻿using Obsidian.Domain.Abstractions.Services;
 
 namespace Obsidian.Domain.Settings
 {
-    public class VaultSettings : IVaultSettings
+    public class VaultSettings
     {
-        public IDailyNotes DailyNotes { get; set; }
-        public ITemplates Templates { get; set; }
+        public DailyNotes DailyNotes { get; set; }
+        public Templates Templates { get; set; }
         public string Path { get; set; }
-        public IVaultSettings Render(ITemplater templater, object? data = null)
+        public VaultSettings Render(ITemplater templater, object? data = null)
         {
             var rendered = new VaultSettings
             {

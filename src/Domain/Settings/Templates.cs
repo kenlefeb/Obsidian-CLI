@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Obsidian.Domain.Abstractions.Services;
-using Obsidian.Domain.Abstractions.Settings;
 
 namespace Obsidian.Domain.Settings;
 
-public class Templates : ITemplates
+public class Templates
 {
 
     public string Path { get; set; }
