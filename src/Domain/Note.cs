@@ -17,5 +17,7 @@ public class Note
         set => _title = value;
     }
 
+    public FrontMatter FrontMatter { get; set; } = new FrontMatter();
+
     public string Contents { get; set; }
 }
