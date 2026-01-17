@@ -48,7 +48,23 @@ dotnet publish src/CLI/CLI.csproj -c Release -o ./bin
 ```
 
 Then copy the binaries to a directory in your PATH.
-    
+
+### Uninstall
+
+To uninstall Obsidian CLI:
+
+**macOS/Linux:**
+```bash
+./uninstall.sh
+```
+
+**Windows (PowerShell):**
+```powershell
+.\uninstall.ps1
+```
+
+The uninstall script will remove all installed files and optionally clean up PATH modifications.
+
 ## Usage/Examples
 
 ```powershell
