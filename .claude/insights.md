@@ -83,6 +83,52 @@
 - Phase 3: Integration tests - full workflows with temp files
 
 **Potential Code Issues Spotted:**
-- `Handlebars.RegisterHelper("date", ...)` called in multiple methods (not idempotent)
+- `Handlebars.RegisterHelper("date", ...")` called in multiple methods (not idempotent)
 - `DetermineDate(FileInfo)` in DailyNote uses DateOnly.Parse without error handling
 - Pattern matching in Recurrence.Includes() just checks non-empty (not fully implemented)
+
+---
+
+## Phase 1 Testing Session (2026-01-17)
+
+### Template Tests - COMPLETED ✅
+
+**Created:** `TemplateTests.cs` with 4 test methods using AAA pattern
+
+**Tests Written:**
+1. `AppliesTo_WithNullRecurrence_ReturnsTrue` - Null safety check
+2. `AppliesTo_WithRecurrenceThatIncludesDate_ReturnsTrue` - Date within range
+3. `AppliesTo_WithRecurrenceThatExcludesDate_ReturnsFalse` - Date outside range
+4. `AppliesTo_WithDefaultRecurrence_ReturnsTrue` - Default EveryDayRecurrence
+
+**All tests passing:** 5/5 (includes 1 placeholder test from UnitTest1.cs)
+
+### Infrastructure Changes
+
+**Upgraded to .NET 10:**
+- System only had .NET 10 SDK/runtime installed
+- Updated all `.csproj` files from `net8.0` to `net10.0`
+- Domain.csproj, CLI.csproj, and obsidian.tests.csproj all updated
+- Build and test execution now working
+
+**Test Project Fixes:**
+- Corrected project references from `..\..\src\obsidian\Obsidian.csproj` to proper paths
+- Added references to both `Domain.csproj` and `CLI.csproj`
+
+### Design Decisions
+
+**EveryDayRecurrence Testing:**
+- Class is marked `internal` so cannot be instantiated in tests
+- Decided to test through `Template` default behavior instead
+- Test validates that default recurrence works (tests implementation, not internals)
+- This is acceptable since it's an implementation detail
+
+**Test Naming Convention:**
+- Using pattern: `MethodName_Scenario_ExpectedOutcome`
+- Examples: `AppliesTo_WithNullRecurrence_ReturnsTrue`
+- Clear, self-documenting test names
+
+**FluentAssertions:**
+- Project already has FluentAssertions configured
+- Using `.Should().BeTrue()` and `.Should().BeFalse()` for readable assertions
+- Much better than `Assert.True()` for understanding test intent

@@ -18,8 +18,10 @@ The Obsidian CLI project now follows XP practices with TDD. However, existing co
 
 ## What We're Doing
 
-Reviewing the Domain layer to understand:
-1. What classes and methods exist
-2. What behaviors need testing
-3. What test coverage gaps exist
-4. Creating a plan to write baseline tests for existing functionality
+**Phase 1: Pure Logic Tests (No I/O)**
+Writing baseline tests for simple domain logic without file system dependencies:
+1. Template.AppliesTo() - recurrence date matching
+2. Recurrence.Includes() - date range validation
+3. EveryDayRecurrence - default behavior
+
+This establishes our TDD workflow and provides quick wins before tackling complex I/O-heavy code.

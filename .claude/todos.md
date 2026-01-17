@@ -19,11 +19,15 @@
 ### Completed Tasks
 - [x] Review existing Domain layer code
 - [x] Identify all testable behaviors in Domain layer
+- [x] Commit documentation to git
+- [x] Upgrade project to .NET 10
+- [x] Fix test project references
+- [x] Write tests for Template.AppliesTo() (4 tests, all passing)
+- [x] Write tests for Recurrence.Includes() (9 tests, all passing)
+- [x] Review Phase 1 tests (14 total tests passing)
 
 ### In Progress
-None
+- [ ] Commit Phase 1 baseline tests
 
 ### Pending Tasks
-- [ ] Analyze existing test file (UnitTest1.cs)
-- [ ] Create test coverage plan
-- [ ] Write baseline tests for existing functionality
+- [ ] Plan Phase 2 (Complex Logic tests)
