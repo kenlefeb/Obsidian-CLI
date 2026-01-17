@@ -209,3 +209,113 @@
 - Untested code is primarily in DailyNote (complex I/O) and CLI
 - Coverage aligns with our phased testing approach
 - Quick feedback: tests run in ~14ms
+
+---
+
+## Phase 2 Testing Session (2026-01-17)
+
+### DailyNote Tests - COMPLETED ✅
+
+**Created:** `DailyNoteTests.cs` with 10 integration tests using temp directories
+
+**Tests Written:**
+1. `Constructor_WithValidDateAndTemplate_CreatesNoteFile` - Full integration test
+2. `Constructor_WithValidDate_CreatesCorrectFolderStructure` - Path generation
+3. `Constructor_WithValidDate_ComposesFileNameFromHandlebarsTemplate` - Filename templating
+4. `Constructor_WithValidDate_ComposesFolderPathFromHandlebarsTemplate` - Folder templating
+5. `Constructor_WithMissingTemplateFile_ThrowsFileNotFoundException` - Error handling
+6. `Constructor_WithNoMatchingTemplate_ThrowsFileNotFoundException` - Template resolution error
+7. `Constructor_WithTemplateRecurrence_SelectsCorrectTemplate` - Recurrence-based selection
+8. `Constructor_WithComplexHandlebarsTemplate_RendersCorrectly` - Full template rendering
+9. `Constructor_CreatesNonExistentDirectories` - Nested directory creation
+10. `Constructor_WithMultipleTemplatesOfSameType_SelectsFirstMatching` - Template priority
+
+**All 24 tests passing:** Template (4) + Recurrence (9) + DailyNote (10) + placeholder (1)
+
+### Testing Strategy
+
+**Integration Testing Approach:**
+- Used IDisposable pattern for temp directory cleanup
+- Each test gets unique temp path: `Path.GetTempPath()/$"ObsidianTests_{Guid.NewGuid()}"`
+- Helper methods reduce boilerplate:
+  - `CreateTestVault()` - Sets up vault with realistic settings
+  - `CreateTemplateFile()` - Creates template files in temp directory
+- Tests verify real file I/O, not mocks
+
+**Why Integration Over Unit:**
+- DailyNote has all private static methods (can't unit test in isolation)
+- Real file I/O is core functionality that needs testing
+- Template rendering with Handlebars needs actual execution
+- Temp directories provide full isolation between tests
+
+### Handlebars Date Format Discovery
+
+**Issue Encountered:**
+- Single character date format "M" was rendering as full date "January 17"
+- Expected numeric month "1" but got month name
+
+**Root Cause:**
+- .NET DateOnly.ToString() interprets single standard format characters as full date formats
+- "M" = "Month day pattern" (full format), not "Month number"
+- Must escape with "%" for single character custom formats
+
+**Solution:**
+- Use `%M` for single-digit month (1-12)
+- Use `MM` for two-digit month (01-12)
+- Pattern: `{{date "%M"}}` renders as "1", `{{date "MM"}}` renders as "01"
+
+**Date Format Reference:**
+- `yyyy` = 4-digit year (2026)
+- `MM` = 2-digit month (01-12)
+- `%M` = 1-digit month (1-12)
+- `dd` = 2-digit day (01-31)
+- `MMMM` = full month name (January)
+- `dddd` = full day name (Saturday)
+
+### Design Decisions
+
+**Namespace Collision:**
+- `Obsidian.Domain.DailyNotes` (collection class)
+- `Obsidian.Domain.Settings.DailyNotes` (settings class)
+- Resolved by using fully qualified name in tests: `new Obsidian.Domain.Settings.DailyNotes`
+- This naming collision could be confusing - may want to refactor in future
+
+**Cross-Platform Path Handling:**
+- Used `Path.DirectorySeparatorChar` in test with nested directories
+- Ensures tests work on Windows (backslash) and Unix (forward slash)
+- Example: `$"{{{{date \"yyyy\"}}}}{Path.DirectorySeparatorChar}Q{{{{date \"%M\"}}}}"`
+
+### Test Coverage Insights
+
+**Template Resolution Testing:**
+- Tests verify FirstOrDefault behavior (selects first matching template)
+- Recurrence date ranges properly filter templates
+- Error messages are clear and actionable
+- FileNotFoundException for missing template files and no matching templates
+
+**Handlebars Integration:**
+- Date helper called multiple times (in filename, folder path, content)
+- Each call to `Handlebars.RegisterHelper("date", ...)` is idempotent
+- Template rendering works with complex multi-line templates
+- Context object `new { date }` passed correctly through all rendering
+
+**File System Behavior:**
+- Directory.CreateDirectory handles nested paths correctly
+- FileInfo.Exists works immediately after File.WriteAllText
+- Temp directory cleanup in Dispose works reliably
+- No file locking issues even with rapid test execution
+
+### Phase 2 Complete
+
+**Total Test Coverage:**
+- 23 real tests + 1 placeholder = 24 tests
+- 100% passing
+- All tests run in ~60ms (excellent feedback loop)
+- Covers all public DailyNote constructor behaviors
+- Error handling, template resolution, path generation, content rendering all tested
+
+**Ready for Coverage Report:**
+- Phase 2 testing complete
+- Need to run coverage report to measure DailyNote coverage
+- Expected: significant increase in Domain package coverage
+- Target: 60% coverage on DailyNote class
