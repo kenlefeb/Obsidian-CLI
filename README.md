@@ -36,7 +36,7 @@ The installation script will:
 - ✓ Add the installation directory to your PATH (if needed)
 
 **Installation locations:**
-- **macOS/Linux:** `~/bin/obsidian`
+- **macOS/Linux:** `~/bin/obsidian-cli/` (with symlink at `~/bin/obsidian`)
 - **Windows:** `%LOCALAPPDATA%\Programs\obsidian\obsidian.exe`
 
 ### Manual Installation

@@ -10,7 +10,8 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-INSTALL_DIR="${HOME}/bin"
+INSTALL_DIR="${HOME}/bin/obsidian-cli"
+BIN_DIR="${HOME}/bin"
 
 echo -e "${GREEN}Obsidian CLI Uninstallation${NC}"
 echo "=========================================="
@@ -36,35 +37,23 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
-# Remove obsidian binary and related files
+# Remove symlink
 echo "Removing Obsidian CLI files..."
 
-# Remove the main executable
-if [ -f "${INSTALL_DIR}/obsidian" ]; then
-    rm "${INSTALL_DIR}/obsidian"
-    echo -e "${GREEN}✓ Removed obsidian executable${NC}"
+if [ -L "${BIN_DIR}/obsidian" ]; then
+    rm "${BIN_DIR}/obsidian"
+    echo -e "${GREEN}✓ Removed symlink: ${BIN_DIR}/obsidian${NC}"
 fi
 
-# Remove DLL files
-rm -f "${INSTALL_DIR}/"*.dll 2>/dev/null && echo -e "${GREEN}✓ Removed DLL files${NC}"
-
-# Remove .pdb files
-rm -f "${INSTALL_DIR}/"*.pdb 2>/dev/null && echo -e "${GREEN}✓ Removed debug files${NC}"
-
-# Remove configuration files
-rm -f "${INSTALL_DIR}/obsidian.runtimeconfig.json" 2>/dev/null
-rm -f "${INSTALL_DIR}/obsidian.deps.json" 2>/dev/null
-rm -f "${INSTALL_DIR}/settings.json" 2>/dev/null
-echo -e "${GREEN}✓ Removed configuration files${NC}"
-
-# Remove files directory if it exists
-if [ -d "${INSTALL_DIR}/files" ]; then
-    rm -rf "${INSTALL_DIR}/files"
-    echo -e "${GREEN}✓ Removed files directory${NC}"
+# Remove installation directory
+if [ -d "${INSTALL_DIR}" ]; then
+    rm -rf "${INSTALL_DIR}"
+    echo -e "${GREEN}✓ Removed installation directory: ${INSTALL_DIR}${NC}"
 fi
 
 echo ""
 echo -e "${GREEN}✓ Obsidian CLI has been uninstalled successfully${NC}"
 echo ""
-echo "Note: ${INSTALL_DIR} is still in your PATH."
-echo "If you don't use this directory for other tools, you may want to remove it from your PATH."
+echo "Note: ${BIN_DIR} is still in your PATH."
+echo "If you added ${BIN_DIR} specifically for Obsidian CLI and don't use it for other tools,"
+echo "you may want to remove it from your shell configuration file."

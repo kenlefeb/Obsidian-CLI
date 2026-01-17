@@ -38,15 +38,34 @@ The installation script:
 2. Builds the project in Release mode
 3. Detects your platform (osx-arm64, osx-x64, linux-x64, linux-arm64, win-x64, win-x86)
 4. Installs binaries and dependencies to:
-   - **macOS/Linux:** `~/bin/`
+   - **macOS/Linux:** `~/bin/obsidian-cli/`
    - **Windows:** `%LOCALAPPDATA%\Programs\obsidian\`
-5. Adds installation directory to PATH if needed
+5. Creates a symlink at `~/bin/obsidian` (macOS/Linux only)
+6. Adds `~/bin` to PATH if needed (macOS/Linux) or adds installation directory (Windows)
 
 ### Installed Files
 
+**macOS/Linux:**
 ```
-~/bin/                                    (or %LOCALAPPDATA%\Programs\obsidian\)
-├── obsidian                              (or obsidian.exe)
+~/bin/
+├── obsidian -> ~/bin/obsidian-cli/obsidian  (symlink)
+└── obsidian-cli/
+    ├── obsidian
+    ├── obsidian.dll
+    ├── Domain.dll
+    ├── Handlebars.dll
+    ├── settings.json
+    ├── obsidian.runtimeconfig.json
+    ├── obsidian.deps.json
+    ├── [various .NET runtime DLLs]
+    └── files/
+        └── [template files]
+```
+
+**Windows:**
+```
+%LOCALAPPDATA%\Programs\obsidian\
+├── obsidian.exe
 ├── obsidian.dll
 ├── Domain.dll
 ├── Handlebars.dll
@@ -123,14 +142,22 @@ Replace `<RID>` with your platform:
 
 ### Install
 
-Copy all files from `./publish/` to a directory in your PATH:
+Copy all files from `./publish/` to a directory:
 
 ```bash
 # macOS/Linux
-cp -r ./publish/* ~/bin/
-chmod +x ~/bin/obsidian
+mkdir -p ~/bin/obsidian-cli
+cp -r ./publish/* ~/bin/obsidian-cli/
+chmod +x ~/bin/obsidian-cli/obsidian
+
+# Create symlink for easy access
+ln -s ~/bin/obsidian-cli/obsidian ~/bin/obsidian
+
+# Make sure ~/bin is in your PATH
+export PATH="$PATH:$HOME/bin"
 
 # Windows (PowerShell)
+New-Item -ItemType Directory -Path $env:LOCALAPPDATA\Programs\obsidian -Force
 Copy-Item .\publish\* $env:LOCALAPPDATA\Programs\obsidian\ -Recurse
 ```
 
@@ -160,16 +187,22 @@ cd Obsidian-CLI
 ```
 
 The uninstall script will:
-- Remove all installed files
-- Clean up the installation directory
-- Remove from PATH (Windows only - macOS/Linux users should manually edit shell config)
+- Remove the symlink at `~/bin/obsidian` (macOS/Linux)
+- Remove the installation directory (`~/bin/obsidian-cli` or Windows equivalent)
+- Remove all installed files and dependencies
+- Remove from PATH (Windows only - macOS/Linux users should manually edit shell config if needed)
 
 ### Manual Uninstall
 
 **macOS/Linux:**
 ```bash
-rm -rf ~/bin/obsidian ~/bin/*.dll ~/bin/settings.json ~/bin/files
-# Also remove the PATH export from your shell config file
+# Remove symlink
+rm ~/bin/obsidian
+
+# Remove installation directory
+rm -rf ~/bin/obsidian-cli
+
+# Optionally remove the PATH export from your shell config file if you added it
 ```
 
 **Windows:**
@@ -186,8 +219,16 @@ Install the .NET SDK from: https://dotnet.microsoft.com/download
 
 ### "obsidian: command not found" (after installation)
 
-1. Verify the file exists: `ls ~/bin/obsidian` (or `dir %LOCALAPPDATA%\Programs\obsidian\obsidian.exe`)
-2. Check if the directory is in your PATH: `echo $PATH` (Unix) or `$env:Path` (Windows)
+**macOS/Linux:**
+1. Verify the symlink exists: `ls -la ~/bin/obsidian`
+2. Verify the installation directory exists: `ls ~/bin/obsidian-cli/`
+3. Check if `~/bin` is in your PATH: `echo $PATH`
+4. Restart your terminal
+5. If still not working, add `~/bin` to PATH manually (see PATH Configuration above)
+
+**Windows:**
+1. Verify the file exists: `dir $env:LOCALAPPDATA\Programs\obsidian\obsidian.exe`
+2. Check if the directory is in your PATH: `$env:Path`
 3. Restart your terminal
 4. If still not working, add the directory to PATH manually (see PATH Configuration above)
 
@@ -195,7 +236,7 @@ Install the .NET SDK from: https://dotnet.microsoft.com/download
 
 Make sure the executable bit is set:
 ```bash
-chmod +x ~/bin/obsidian
+chmod +x ~/bin/obsidian-cli/obsidian
 ```
 
 ### Tests fail during installation

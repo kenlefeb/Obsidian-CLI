@@ -11,7 +11,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Configuration
-INSTALL_DIR="${HOME}/bin"
+INSTALL_DIR="${HOME}/bin/obsidian-cli"
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLI_PROJECT="${PROJECT_DIR}/src/CLI/CLI.csproj"
 
@@ -110,12 +110,27 @@ echo "Installing to ${INSTALL_DIR}..."
 cp -r "${PROJECT_DIR}/publish/"* "${INSTALL_DIR}/"
 chmod +x "${INSTALL_DIR}/obsidian"
 
+# Create symlink in ~/bin for easy access
+BIN_DIR="${HOME}/bin"
+if [ ! -d "${BIN_DIR}" ]; then
+    mkdir -p "${BIN_DIR}"
+fi
+
+# Remove old symlink if it exists
+if [ -L "${BIN_DIR}/obsidian" ] || [ -f "${BIN_DIR}/obsidian" ]; then
+    rm "${BIN_DIR}/obsidian"
+fi
+
+# Create new symlink
+ln -s "${INSTALL_DIR}/obsidian" "${BIN_DIR}/obsidian"
+echo -e "${GREEN}✓ Created symlink: ${BIN_DIR}/obsidian -> ${INSTALL_DIR}/obsidian${NC}"
+
 echo -e "${GREEN}✓ Installation completed successfully${NC}"
 echo ""
 
-# Check if install directory is in PATH
-if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
-    echo -e "${YELLOW}⚠ Warning: ${INSTALL_DIR} is not in your PATH${NC}"
+# Check if ~/bin is in PATH
+if [[ ":$PATH:" != *":${BIN_DIR}:"* ]]; then
+    echo -e "${YELLOW}⚠ Warning: ${BIN_DIR} is not in your PATH${NC}"
     echo ""
     echo "To add it to your PATH, add this line to your shell configuration file:"
     echo ""
@@ -129,14 +144,14 @@ if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
         SHELL_CONFIG="~/.profile"
     fi
 
-    echo -e "  ${GREEN}export PATH=\"\$PATH:${INSTALL_DIR}\"${NC}"
+    echo -e "  ${GREEN}export PATH=\"\$PATH:${BIN_DIR}\"${NC}"
     echo ""
     echo "Add this to: ${SHELL_CONFIG}"
     echo ""
     echo "Then run: source ${SHELL_CONFIG}"
     echo ""
 else
-    echo -e "${GREEN}✓ ${INSTALL_DIR} is already in your PATH${NC}"
+    echo -e "${GREEN}✓ ${BIN_DIR} is already in your PATH${NC}"
     echo ""
 fi
 
