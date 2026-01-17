@@ -7,7 +7,47 @@ While it results in some duplication of functionality, this toolkit is designed 
 
 ## Installation
 
-Currently, you'll need to clone the repo and build it yourself. Once you have the resulting binaries, just make sure the Obsidian.exe is in your path.
+### Quick Install
+
+**macOS/Linux:**
+```bash
+# Clone the repository
+git clone https://github.com/kenlefeb/Obsidian-CLI.git
+cd Obsidian-CLI
+
+# Run the installation script
+./install.sh
+```
+
+**Windows (PowerShell):**
+```powershell
+# Clone the repository
+git clone https://github.com/kenlefeb/Obsidian-CLI.git
+cd Obsidian-CLI
+
+# Run the installation script
+.\install.ps1
+```
+
+The installation script will:
+- ✓ Run all tests to ensure everything works
+- ✓ Build the project in Release mode
+- ✓ Install the `obsidian` command to your local bin directory
+- ✓ Add the installation directory to your PATH (if needed)
+
+**Installation locations:**
+- **macOS/Linux:** `~/bin/obsidian`
+- **Windows:** `%LOCALAPPDATA%\Programs\obsidian\obsidian.exe`
+
+### Manual Installation
+
+If you prefer to build manually:
+
+```bash
+dotnet publish src/CLI/CLI.csproj -c Release -o ./bin
+```
+
+Then copy the binaries to a directory in your PATH.
     
 ## Usage/Examples
 
