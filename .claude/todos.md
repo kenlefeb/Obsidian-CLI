@@ -25,9 +25,13 @@
 - [x] Write tests for Template.AppliesTo() (4 tests, all passing)
 - [x] Write tests for Recurrence.Includes() (9 tests, all passing)
 - [x] Review Phase 1 tests (14 total tests passing)
+- [x] Commit Phase 1 baseline tests
+- [x] Generate test coverage report
+- [x] Create TEST-COVERAGE.md document
+- [x] Update README with test information
 
 ### In Progress
-- [ ] Commit Phase 1 baseline tests
+- [ ] Commit coverage report and documentation updates
 
 ### Pending Tasks
 - [ ] Plan Phase 2 (Complex Logic tests)

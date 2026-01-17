@@ -49,7 +49,25 @@ If there are particular pieces of data that you would find helpful for use in a 
 
 ## Running Tests
 
-To run tests, write some and send me a PR, so we can all benefit!
+```bash
+# Run all tests
+dotnet test
+
+# Run with coverage
+dotnet test --collect:"XPlat Code Coverage"
+
+# Run in watch mode
+dotnet watch test --project tests/obsidian.tests
+```
+
+**Test Coverage:** 6.2% overall (Phase 1 complete)
+- See [TEST-COVERAGE.md](TEST-COVERAGE.md) for detailed coverage report
+- We follow Test-Driven Development (TDD) practices - see [CLAUDE.MD](CLAUDE.MD)
+
+Current test suite:
+- ✅ 14 tests passing
+- ✅ Template & Recurrence classes fully tested
+- 🔄 Phase 2 (DailyNote logic) in planning
 
 ## Contributing
 
