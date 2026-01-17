@@ -60,15 +60,16 @@ dotnet test --collect:"XPlat Code Coverage"
 dotnet watch test --project tests/obsidian.tests
 ```
 
-**Test Coverage:** 35% overall (Phase 2 complete)
-- Domain package: **70% coverage** ✅
+**Test Coverage:** 37% overall (Phase 3 partial - bug discovered)
+- Domain package: **74% coverage** ✅
 - See [TEST-COVERAGE.md](TEST-COVERAGE.md) for detailed coverage report
 - We follow Test-Driven Development (TDD) practices - see [CLAUDE.MD](CLAUDE.MD)
 
 Current test suite:
-- ✅ 24 tests passing
+- ✅ 29 tests passing
 - ✅ Template & Recurrence classes fully tested (Phase 1)
 - ✅ DailyNote class 84% coverage with integration tests (Phase 2)
+- ⚠️ DailyNotes collection partial (Phase 3 - discovered critical bug in enumeration)
 
 ## Contributing
 

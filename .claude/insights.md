@@ -314,8 +314,146 @@
 - Covers all public DailyNote constructor behaviors
 - Error handling, template resolution, path generation, content rendering all tested
 
-**Ready for Coverage Report:**
+**Coverage Report Results:**
 - Phase 2 testing complete
-- Need to run coverage report to measure DailyNote coverage
-- Expected: significant increase in Domain package coverage
-- Target: 60% coverage on DailyNote class
+- DailyNote: 84.2% line coverage, 100% branch coverage
+- Domain package: 70% overall coverage
+- Exceeded target: 60% goal achieved
+
+---
+
+## Phase 3 Testing Session (2026-01-17)
+
+### DailyNotes Collection Tests - PARTIAL ✅
+
+**Created:** `DailyNotesCollectionTests.cs` with 5 working tests
+
+**Tests Implemented:**
+1. `Constructor_InitializesWithVault` - Basic construction
+2. `LazyLoading_DoesNotLoadNotesUntilAccessed` - Lazy initialization (limited test)
+3. `Create_WithoutDate_CreatesNoteForToday` - Create with default date
+4. `Create_WithSpecificDate_CreatesNoteForThatDate` - Create with specific date
+5. `Create_CreatesRootFolderIfMissing` - Directory creation
+
+**Tests Skipped (Bug):**
+- `GetEnumerator_FindsExistingDailyNotes` - Would enumerate notes
+- `GetEnumerator_FiltersWithSearchPattern` - Would test filtering
+- `GetEnumerator_ReturnsEmptyWhenNoNotes` - Would test empty case
+- `IQueryable_SupportsLinqQueries` - Would test LINQ
+- `ElementType_ReturnsCorrectType` - Triggers lazy loading
+
+**All 29 tests passing:** Template (4) + Recurrence (9) + DailyNote (10) + DailyNotesCollection (5) + placeholder (1)
+
+### Bug Discovered: SearchPattern Dual Usage
+
+**Location:** `Vault.cs` lines 43-50, in `DailyNotes.FindDailyNotes()`
+
+**Issue:**
+```csharp
+private IQueryable<DailyNote> FindDailyNotes(DirectoryInfo folder, string pattern)
+{
+    Regex regex = new(pattern);  // Line 45: pattern used as REGEX
+
+    return Directory.GetFiles(folder.FullName, pattern)  // Line 47: pattern used as GLOB
+        .Where(path => regex.IsMatch(path))
+        .Select(path => new DailyNote(_vault, path))
+        .AsQueryable();
+}
+```
+
+**Problem:**
+- `Directory.GetFiles()` expects a **glob pattern** (e.g., `*.md`, `2026-*.md`)
+- `new Regex()` expects a **regex pattern** (e.g., `\d{4}-\d\d-\d\d\.md`)
+- The same `pattern` variable is used for BOTH purposes
+- Default SearchPattern in settings is `@"\d{4}-\d\d-\d\d\.md"` (regex)
+- Using regex as glob: throws ArgumentException from Directory.GetFiles
+- Using glob as regex: throws RegexParseException from Regex constructor
+
+**Impact:**
+- **DailyNotes collection enumeration is completely broken**
+- Cannot iterate over existing daily notes
+- Cannot use LINQ queries on the collection
+- The feature has likely never worked in production
+
+**Workarounds Attempted:**
+- Tried `*.md` as pattern → Regex parsing fails
+- Tried `\d{4}-\d\d-\d\d\.md` as pattern → Glob parsing fails
+- No pattern works for both purposes
+
+**Recommended Fix:**
+```csharp
+private IQueryable<DailyNote> FindDailyNotes(DirectoryInfo folder, string pattern)
+{
+    Regex regex = new(pattern);
+
+    // Use glob "*" or "*.md" to get all markdown files
+    return Directory.GetFiles(folder.FullName, "*.md")
+        .Where(path => regex.IsMatch(Path.GetFileName(path)))  // Then filter with regex
+        .Select(path => new DailyNote(_vault, path))
+        .AsQueryable();
+}
+```
+
+**Alternative Fix:**
+- Split SearchPattern into two settings: GlobPattern and RegexPattern
+- Or remove regex filtering entirely and just use glob
+
+**Testing Impact:**
+- Could only test `Create()` method (30.9% coverage)
+- Could NOT test enumeration, filtering, LINQ (remaining 69.1%)
+- 5 tests working, 5 tests documented but skipped
+
+### Testing Strategy for Phase 3
+
+**Integration Testing Approach:**
+- Same IDisposable pattern as Phase 2
+- Same helper methods for vault and template creation
+- Real file I/O with temp directories
+
+**What We Could Test:**
+- Constructor and initialization
+- Create() method with and without dates
+- Folder creation logic
+
+**What We Couldn't Test (Bug):**
+- Lazy loading behavior (triggers enumeration)
+- Finding existing notes
+- Search pattern filtering
+- LINQ query support
+- IQueryable implementation
+
+### Phase 3 Results
+
+**Coverage Achieved:**
+- Overall: 37.2% line coverage, 31.5% branch coverage (+2.2% from Phase 2)
+- Domain package: 74.4% line coverage, 85% branch coverage (+4.4% from Phase 2)
+- DailyNotes collection: 30.9% line coverage, 50% branch coverage (up from 14.3%)
+
+**Test Suite:**
+- 28 real tests + 1 placeholder = 29 tests
+- 100% passing
+- 5 additional tests documented but skipped due to bug
+- All tests run in ~75ms
+
+**Limitations:**
+- Could not reach target coverage due to production bug
+- Enumeration logic remains untested
+- Bug prevents full validation of IQueryable implementation
+- Remaining 69% of DailyNotes code is unreachable until bug is fixed
+
+### Phase 3 Recommendations
+
+1. **Fix the SearchPattern bug** (high priority)
+   - This is a critical bug that breaks core functionality
+   - Prevents users from querying their daily notes
+   - Should be fixed before shipping
+
+2. **Add tests after bug fix**
+   - Uncomment the 5 skipped tests
+   - Verify enumeration works correctly
+   - Test LINQ queries and filtering
+
+3. **Consider API design**
+   - Is dual glob+regex filtering necessary?
+   - Could simplify to just glob pattern
+   - Or make regex optional
