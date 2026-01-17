@@ -40,7 +40,7 @@ public class DailyNotesCollectionTests : IDisposable
                     Folder = "{{date \"yyyy-MM\"}}",
                     Name = "{{date \"yyyy-MM-dd\"}}.md",
                     TemplateType = "daily-note",
-                    SearchPattern = "*.md"  // Glob pattern for Directory.GetFiles
+                    SearchPattern = @"\d{4}-\d\d-\d\d\.md"  // Regex pattern to match YYYY-MM-DD.md
                 },
                 Templates = new Obsidian.Domain.Settings.Templates
                 {
@@ -105,25 +105,96 @@ public class DailyNotesCollectionTests : IDisposable
         dailyNotes.Should().NotBeNull();
     }
 
-    // NOTE: The following tests are skipped due to a bug in DailyNotes.FindDailyNotes
-    // The SearchPattern is used as BOTH a glob pattern for Directory.GetFiles (line 47)
-    // AND a regex pattern for filtering (line 45). This means:
-    // - If you use a glob pattern like "*.md", the regex parsing fails
-    // - If you use a regex pattern like "\d{4}-\d\d-\d\d\.md", the glob parsing fails
-    //
-    // To fix: Use "*" or "*.md" as glob for Directory.GetFiles, then filter with regex
-    // Or: Make SearchPattern just a regex and use "*" for the glob
-    //
-    // Skipping these tests until the production code is fixed.
+    [Fact]
+    public void GetEnumerator_FindsExistingDailyNotes()
+    {
+        // Arrange
+        var vault = CreateTestVault();
+        CreateTemplateFile(vault, "default", "# Test");
 
-    // [Fact]
-    // public void GetEnumerator_FindsExistingDailyNotes() { }
-    // [Fact]
-    // public void GetEnumerator_FiltersWithSearchPattern() { }
-    // [Fact]
-    // public void GetEnumerator_ReturnsEmptyWhenNoNotes() { }
-    // [Fact]
-    // public void IQueryable_SupportsLinqQueries() { }
+        // Create some daily notes
+        var dailyNotesRoot = Path.Combine(_tempPath, "Daily Notes", "2026-01");
+        Directory.CreateDirectory(dailyNotesRoot);
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "2026-01-15.md"), "# Test 1");
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "2026-01-16.md"), "# Test 2");
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "2026-01-17.md"), "# Test 3");
+
+        var dailyNotes = new DailyNotesCollection(vault);
+
+        // Act
+        var notes = dailyNotes.ToList();
+
+        // Assert
+        notes.Should().HaveCount(3);
+        notes.Select(n => n.File.Name).Should().Contain(new[] { "2026-01-15.md", "2026-01-16.md", "2026-01-17.md" });
+    }
+
+    [Fact]
+    public void GetEnumerator_FiltersWithSearchPattern()
+    {
+        // Arrange
+        var vault = CreateTestVault();
+        CreateTemplateFile(vault, "default", "# Test");
+
+        // Create daily notes and non-matching files
+        var dailyNotesRoot = Path.Combine(_tempPath, "Daily Notes");
+        Directory.CreateDirectory(dailyNotesRoot);
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "2026-01-15.md"), "# Test 1");
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "2026-01-16.md"), "# Test 2");
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "notes.md"), "# Not a daily note");
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "README.md"), "# README");
+
+        var dailyNotes = new DailyNotesCollection(vault);
+
+        // Act
+        var notes = dailyNotes.ToList();
+
+        // Assert
+        notes.Should().HaveCount(2);
+        notes.Select(n => n.File.Name).Should().Contain(new[] { "2026-01-15.md", "2026-01-16.md" });
+        notes.Select(n => n.File.Name).Should().NotContain(new[] { "notes.md", "README.md" });
+    }
+
+    [Fact]
+    public void GetEnumerator_ReturnsEmptyWhenNoNotes()
+    {
+        // Arrange
+        var vault = CreateTestVault();
+        CreateTemplateFile(vault, "default", "# Test");
+
+        // Don't create any daily notes, just the root folder
+        var dailyNotes = new DailyNotesCollection(vault);
+
+        // Act
+        var notes = dailyNotes.ToList();
+
+        // Assert
+        notes.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void IQueryable_SupportsLinqQueries()
+    {
+        // Arrange
+        var vault = CreateTestVault();
+        CreateTemplateFile(vault, "default", "# Test");
+
+        // Create some daily notes
+        var dailyNotesRoot = Path.Combine(_tempPath, "Daily Notes");
+        Directory.CreateDirectory(dailyNotesRoot);
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "2026-01-15.md"), "# Test 1");
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "2026-01-16.md"), "# Test 2");
+        File.WriteAllText(Path.Combine(dailyNotesRoot, "2026-01-17.md"), "# Test 3");
+
+        var dailyNotes = new DailyNotesCollection(vault);
+
+        // Act - Use LINQ to filter
+        var note = dailyNotes.FirstOrDefault(n => n.File.Name == "2026-01-16.md");
+
+        // Assert
+        note.Should().NotBeNull();
+        note!.File.Name.Should().Be("2026-01-16.md");
+    }
 
     [Fact]
     public void Create_WithoutDate_CreatesNoteForToday()

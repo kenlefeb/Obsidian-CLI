@@ -20,8 +20,17 @@ public class DailyNote : Note
     {
         Vault = vault;
         File = new FileInfo(path);
-        var date = DetermineDate(File);
-        (Content, File) = GetContentAndFile(Vault, date, path);
+
+        // If file exists, load it; otherwise create it
+        if (File.Exists)
+        {
+            Content = System.IO.File.ReadAllText(path);
+        }
+        else
+        {
+            var date = DetermineDate(File);
+            (Content, File) = GetContentAndFile(Vault, date, path);
+        }
     }
 
     private static (string, FileInfo) GetContentAndFile(Vault vault, DateOnly date, string path)
@@ -45,8 +54,9 @@ public class DailyNote : Note
 
     private static DateOnly DetermineDate(FileInfo file)
     {
-        var name = file.Name;
-        var date = DateOnly.Parse(name);
+        // Remove the file extension before parsing
+        var nameWithoutExtension = Path.GetFileNameWithoutExtension(file.Name);
+        var date = DateOnly.Parse(nameWithoutExtension);
         return date;
     }
 

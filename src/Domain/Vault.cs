@@ -44,8 +44,9 @@ namespace Obsidian.Domain
         {
             Regex regex = new(pattern);
 
-            return Directory.GetFiles(folder.FullName, pattern)
-                .Where(path => regex.IsMatch(path))
+            // Use glob "*.md" for Directory.GetFiles with recursive search, then filter with regex on filename
+            return Directory.GetFiles(folder.FullName, "*.md", SearchOption.AllDirectories)
+                .Where(path => regex.IsMatch(Path.GetFileName(path)))
                 .Select(path => new DailyNote(_vault, path))
                 .AsQueryable();
         }
